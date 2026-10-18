@@ -1,0 +1,39 @@
+# Candidate relationships discovered from shared column names (scripts/discover_athena.py).
+# NONE are approved. The V0.1 query service is single-view (approved 2026-10-18) and ignores
+# this file except to verify that no relationship is enabled.
+
+version: 1
+
+relationships:
+
+  - id: summary_to_calendar
+    from: {view: v_account_summary, columns: [transaction_date]}
+    to: {view: v_dim_calendar, columns: [calendar_date]}
+    cardinality: many_to_one
+    status: pending_approval
+    enabled: false
+    notes: Would provide fiscal attributes; V0.1 derives time grains from transaction_date instead.
+
+  - id: summary_to_adm
+    from: {view: v_account_summary, columns: [account_number]}
+    to: {view: v_dim_adm, columns: [account_number]}
+    cardinality: many_to_one
+    status: pending_approval
+    enabled: false
+    notes: dim_adm is a single 2026-03-31 snapshot; 1,200 accounts in dim_adm vs coverage in summary unverified.
+
+  - id: summary_to_customers
+    from: {view: v_account_summary, columns: [customer_id]}
+    to: {view: v_dim_customers, columns: [customer_id]}
+    cardinality: many_to_one
+    status: pending_approval
+    enabled: false
+    notes: Customer view exposes PII (mock data); must not be joined for LLM-facing queries.
+
+  - id: summary_to_par_bucket
+    from: {view: v_account_summary, columns: [loan_dpd_days]}
+    to: {view: v_dim_par_bucket, columns: [od_days]}
+    cardinality: many_to_one
+    status: pending_approval
+    enabled: false
+    notes: Redundant for V0.1 because par_bucket and par_bucket_order already exist on the summary view.

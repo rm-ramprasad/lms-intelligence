@@ -1,0 +1,64 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AthenaQueryInApprovedWorkgroupOnly",
+      "Effect": "Allow",
+      "Action": [
+        "athena:StartQueryExecution",
+        "athena:GetQueryExecution",
+        "athena:GetQueryResults",
+        "athena:StopQueryExecution",
+        "athena:GetWorkGroup"
+      ],
+      "Resource": "arn:aws:athena:ap-south-1:791896160716:workgroup/analytics_poc_wg"
+    },
+    {
+      "Sid": "GlueCatalogReadOnly",
+      "Effect": "Allow",
+      "Action": ["glue:GetDatabase", "glue:GetTable", "glue:GetTables", "glue:GetPartition", "glue:GetPartitions"],
+      "Resource": [
+        "arn:aws:glue:ap-south-1:791896160716:catalog",
+        "arn:aws:glue:ap-south-1:791896160716:database/analytics_poc",
+        "arn:aws:glue:ap-south-1:791896160716:table/analytics_poc/*"
+      ]
+    },
+    {
+      "Sid": "SourceAccountSummaryReadOnly",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "arn:aws:s3:::opta-s3-demo/nbfc-base-data/AccountSummary/*"
+    },
+    {
+      "Sid": "SourceListAccountSummaryPrefix",
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket", "s3:GetBucketLocation"],
+      "Resource": "arn:aws:s3:::opta-s3-demo",
+      "Condition": { "StringLike": { "s3:prefix": ["nbfc-base-data/AccountSummary/*"] } }
+    },
+    {
+      "Sid": "AthenaResultsReadWrite",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:AbortMultipartUpload", "s3:ListBucket", "s3:GetBucketLocation", "s3:ListMultipartUploadParts"],
+      "Resource": [
+        "arn:aws:s3:::analytics-poc-athena-results-791896160716-ap-south-1",
+        "arn:aws:s3:::analytics-poc-athena-results-791896160716-ap-south-1/query-results/*"
+      ]
+    },
+    {
+      "Sid": "DenyAllWritesAndDDL",
+      "Effect": "Deny",
+      "Action": [
+        "glue:Create*", "glue:Update*", "glue:Delete*", "glue:BatchDelete*", "glue:StartCrawler",
+        "s3:DeleteObject", "s3:PutBucketPolicy", "bedrock:*", "rds:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenySourceBucketWrites",
+      "Effect": "Deny",
+      "Action": ["s3:PutObject"],
+      "Resource": "arn:aws:s3:::opta-s3-demo/*"
+    }
+  ]
+}

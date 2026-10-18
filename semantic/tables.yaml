@@ -1,0 +1,478 @@
+# Governed table catalog for analytics_poc (V0.1).
+# Single source of truth: sql/create_raw_tables.sql, sql/create_typed_views.sql and
+# sql/validate_data.sql are GENERATED from this file by scripts/generate_sql.py.
+#
+# Column fields
+#   src     exact CSV header text (order matters: OpenCSVSerde maps by position)
+#   name    snake_case column name (default: derived from src)
+#   type    string | int | bigint | amount | rate | date | timestamp | bool   (default: string)
+#   pii     none | identifier | quasi | sensitive | direct                   (default: table default_pii or none)
+#             identifier       -> kept in typed view (needed as key), never exposed to the LLM layer
+#             quasi/sensitive/direct -> EXCLUDED from typed views and validation output
+#   quality placeholder | all_zero | constant   data-quality finding from profiling; do not
+#             use such columns in metrics or as dimensions until real data replaces them
+#   note    confirmed meaning/format from profiling
+#   review  open question that must be resolved before the column is used in metrics
+#
+# Types were confirmed by aggregate profiling (scripts/profile_s3.py, 2026-10-18):
+# all dates are ISO yyyy-mm-dd, all typed columns convert with 0 failures, 0 malformed rows.
+# The dataset is synthetic/demo data (DEMO-* branches, "Demo <Column>" placeholders).
+# No relationships between tables are declared or assumed.
+
+aws:
+  profile: analytics-poc                      # dev/admin scripts (DDL, discovery)
+  runtime_profile: analytics-query-runtime    # bi_service query execution (read-only IAM user)
+  region: ap-south-1
+  account_id: "791896160716"
+  source_bucket: opta-s3-demo
+  source_prefix: nbfc-base-data/
+  results_bucket: analytics-poc-athena-results-791896160716-ap-south-1
+  workgroup: analytics_poc_wg
+  database: analytics_poc
+  bytes_scanned_cutoff: 1073741824   # 1 GiB per query
+
+defaults:
+  date_formats: ["%Y-%m-%d"]   # profiling: 100% of date values in all files match yyyy-mm-dd
+  true_values: ["Y", "YES", "TRUE", "T", "1"]
+  false_values: ["N", "NO", "FALSE", "F", "0"]
+
+tables:
+
+  account_summary:
+    description: Account-level month-end snapshot facts (balances, demand, repayment, overdue buckets).
+    source_file: FactAccountSummary.csv
+    location: s3://opta-s3-demo/nbfc-base-data/AccountSummary/
+    header_column_count: 91
+    line_ending: LF
+    query_access: governed   # the only view the query service may read in V0.1
+    snapshot_date_column: transaction_date
+    snapshot_cadence: month_end   # APPROVED 2026-10-18
+    grain_candidate: [account_number, transaction_date]   # UNVERIFIED
+    columns:
+      - {src: TransactionDate, type: date, note: "month-end snapshot date (approved 2026-10-18)"}
+      - {src: LoanGroup}
+      - {src: AccountNumber, pii: identifier}
+      - {src: CustomerID, name: customer_id, pii: identifier}
+      - {src: ProductCode}
+      - {src: BranchCode}
+      - {src: MaturityDate, type: date}
+      - {src: InterestRate, type: rate, note: "fraction, observed 0.16-0.25"}
+      - {src: EMI, name: emi, type: amount}
+      - {src: Tenure, type: int, review: "observed 36-71; assumed months"}
+      - {src: SanctionedAmount, type: amount}
+      - {src: LedgerBalance, type: amount}
+      - {src: TotalOS, name: total_os, type: amount}
+      - {src: CustomerProvisionAmount, type: amount}
+      - {src: LoanProvisionAmount, type: amount}
+      - {src: AcStatus, name: ac_status}
+      - {src: NPAFlag, name: npa_flag, type: bool}
+      - {src: LoanDPDDays, name: loan_dpd_days, type: int}
+      - {src: MaxODDays, name: max_od_days, type: int}
+      - {src: RBIODDays, name: rbi_od_days, type: int}
+      - {src: NetPayoffAmount, type: amount, quality: all_zero}
+      - {src: TotalFeesDue, type: amount, quality: all_zero}
+      - {src: Vertical, quality: placeholder}
+      - {src: Deposit, quality: placeholder}
+      - {src: Industry, quality: placeholder}
+      - {src: Segment, quality: placeholder}
+      - {src: Facility, quality: placeholder}
+      - {src: Security}
+      - {src: Nature}
+      - {src: Purpose, quality: placeholder}
+      - {src: CustomerAssetCategory, quality: placeholder}
+      - {src: LoanAssetCategory, quality: placeholder}
+      - {src: StateName}
+      - {src: SanctionRefNo, quality: placeholder}
+      - {src: DemandAmount, type: amount}
+      - {src: DemandPrincipalAmount, type: amount}
+      - {src: DemandNormalInterestAmount, type: amount}
+      - {src: RepaymentAmount, type: amount, review: "contains negative values (reversals?)"}
+      - {src: RepaidPrincipalAmount, type: amount, review: "contains negative values (reversals?)"}
+      - {src: RepaidNormalInterestAmount, type: amount, review: "contains negative values (reversals?)"}
+      - {src: DisbursementAmount, type: amount}
+      - {src: NetDisbursement, type: amount}
+      - {src: PAR Bucket, name: par_bucket}
+      - {src: PARBucketOrder, name: par_bucket_order, type: int}
+      - {src: TicketSize, note: "bucket label (Up to 1.5 Cr / 1.5 - 2.5 Cr / Above 2.5 Cr)"}
+      - {src: TicketSizeOrder, type: int}
+      - {src: BookSource, quality: placeholder}
+      - {src: RBIODDaysFromLMS, name: rbi_od_days_from_lms, type: int}
+      - {src: StateCode}
+      - {src: NCAFlag, name: nca_flag, type: bool, review: "values 0/1; NCA meaning unconfirmed"}
+      - {src: NCATransactionDate, name: nca_transaction_date, type: date}
+      - {src: AdvanceFromCustomers, type: amount}
+      - {src: PAR0, name: par_0, type: amount, note: "outstanding amount"}
+      - {src: PAR1To30, name: par_1_to_30, type: amount, note: "outstanding amount"}
+      - {src: PAR31To60, name: par_31_to_60, type: amount, note: "outstanding amount"}
+      - {src: PAR61To90, name: par_61_to_90, type: amount, note: "outstanding amount"}
+      - {src: PAROver90, name: par_over_90, type: amount, note: "outstanding amount"}
+      - {src: PrepaymentAmount, type: amount}
+      - {src: PrepaymentPrincipalAmount, type: amount}
+      - {src: PrepaymentNormalInterestAmount, type: amount, quality: all_zero}
+      - {src: PreClosureAmount, type: amount}
+      - {src: PreClosurePrincipalAmount, type: amount}
+      - {src: PreClosureNormalInterestAmount, type: amount, quality: all_zero}
+      - {src: EOMODBucket0, name: eom_od_bucket_0, type: amount, quality: all_zero}
+      - {src: EOMODBucket1To30, name: eom_od_bucket_1_to_30, type: amount}
+      - {src: EOMODBucket31To60, name: eom_od_bucket_31_to_60, type: amount}
+      - {src: EOMODBucket61To90, name: eom_od_bucket_61_to_90, type: amount}
+      - {src: EOMODBucketOver90, name: eom_od_bucket_over_90, type: amount}
+      - {src: EOMTotalOverDue, name: eom_total_overdue, type: amount}
+      - {src: BOMODBucket0, name: bom_od_bucket_0, type: amount, quality: all_zero}
+      - {src: BOMODBucket1To30, name: bom_od_bucket_1_to_30, type: amount}
+      - {src: BOMODBucket31To60, name: bom_od_bucket_31_to_60, type: amount}
+      - {src: BOMODBucket61To90, name: bom_od_bucket_61_to_90, type: amount}
+      - {src: BOMODBucketOver90, name: bom_od_bucket_over_90, type: amount}
+      - {src: ScheduledRepayment, type: amount}
+      - {src: ScheduledRepaymentPrincipalAmount, type: amount}
+      - {src: ScheduledRepaymentNormalInterestAmount, type: amount}
+      - {src: PrincipalRepaidForCurrentMonthDemand, type: amount, review: "contains negative values (reversals?)"}
+      - {src: InterestRepaidForCurrentMonthDemand, type: amount, review: "contains negative values (reversals?)"}
+      - {src: RepaymentForCurrentMonthDemand, type: amount, review: "contains negative values (reversals?)"}
+      - {src: PrincipalRepaidForOverdueDemand, type: amount}
+      - {src: InterestRepaidForOverdueDemand, type: amount}
+      - {src: RepaymentForOverdueDemand, type: amount}
+      - {src: EOMTotalPrincipalDue, name: eom_total_principal_due, type: amount}
+      - {src: ADMCumulativePrincipalRepaid, name: adm_cumulative_principal_repaid, type: amount}
+      - {src: SanctionPullFlag, quality: placeholder}
+      - {src: WriteOffFlag, type: bool}
+      - {src: size, name: size_category, review: "same values and distribution as ticket_size; likely duplicate"}
+      - {src: SanctionLimit, type: amount, quality: all_zero}
+      - {src: RestructureFlag, type: bool}
+      - {src: DailyAvgAUM, name: daily_avg_aum, type: amount}
+
+  dim_adm:
+    description: Loan account attributes (ADM), single as-of snapshot dated 2026-03-31 (1,200 accounts).
+    source_file: DimADM.csv
+    location: s3://opta-s3-demo/nbfc-base-data/DimADM/
+    header_column_count: 68
+    line_ending: CRLF
+    expose_pii_in_view: true # APPROVED 2026-10-18: mock data, all 68 columns in v_dim_adm.
+    grain_candidate: [account_number, transaction_date]   # UNVERIFIED
+    columns:
+      - {src: TransactionDate, type: date, quality: constant, review: 'single value 2026-03-31: as-of date of this extract'}
+      - {src: LoanGroup}
+      - {src: AccountNumber, pii: identifier}
+      - {src: CustomerID, name: customer_id, pii: identifier}
+      - {src: CustomerName, pii: direct}
+      - {src: ProductName}
+      - {src: ProductCode}
+      - {src: BranchCode}
+      - {src: BranchName}
+      - {src: DisbursementDate, type: date}
+      - {src: InterestRate, type: rate, note: "fraction, observed 0.16-0.25"}
+      - {src: DelayedChargeRate, type: rate, quality: all_zero}
+      - {src: Tenure, type: int, review: "observed 36-71; assumed months"}
+      - {src: SanctionedAmount, type: amount}
+      - {src: DisbursedAmount, type: amount}
+      - {src: AcStatus, name: ac_status, quality: constant}
+      - {src: AcClosedDate, name: ac_closed_date, type: date, quality: constant, review: "every row = 2026-03-31; placeholder, not a real event date"}
+      - {src: NPAFlag, name: npa_flag, type: bool, quality: constant}
+      - {src: NPAMarkingDate, name: npa_marking_date, type: date, quality: constant, review: "every row = 2026-03-31; placeholder, not a real event date"}
+      - {src: NPAUnmarkingDate, name: npa_unmarking_date, type: date, quality: constant, review: "every row = 2026-03-31; placeholder, not a real event date"}
+      - {src: HypothecatedTo, pii: direct, review: "may name a person/entity; excluded until confirmed"}
+      - {src: PrimarySecurity, pii: direct, review: "free text may contain PII; excluded until confirmed"}
+      - {src: CollateralSecurity, pii: direct, review: "free text may contain PII; excluded until confirmed"}
+      - {src: UdyamRegistrationNo, pii: direct}
+      - {src: BCPartnerName, name: bc_partner_name}
+      - {src: PlantAndMachineryNew, quality: placeholder}
+      - {src: AcceptableLiquidInstrument, quality: placeholder}
+      - {src: SecuritizationOfReceivables/Assets/Debts, name: securitization_of_receivables, quality: placeholder}
+      - {src: EnterpriseType, quality: placeholder}
+      - {src: IndustryType, quality: placeholder}
+      - {src: ActualLoanTenure, type: int, quality: all_zero}
+      - {src: Vertical, quality: placeholder}
+      - {src: Size, name: size_category, review: "same values as ticket_size; likely duplicate"}
+      - {src: Deposit, quality: placeholder}
+      - {src: Industry, quality: placeholder}
+      - {src: Segment, quality: placeholder}
+      - {src: Facility, quality: placeholder}
+      - {src: Security}
+      - {src: Nature}
+      - {src: Purpose, quality: placeholder}
+      - {src: CustomerAssetCategory, quality: placeholder}
+      - {src: LoanAssetCategory, quality: placeholder}
+      - {src: ProductSubCategory}
+      - {src: ProductFrequency, quality: placeholder}
+      - {src: SanctionRefNo, quality: placeholder}
+      - {src: SanctionLimit, type: amount, quality: all_zero}
+      - {src: SanctionDate, type: date, quality: constant, review: "every row = 2026-03-31; placeholder, not a real event date"}
+      - {src: LEIExpiryDate, name: lei_expiry_date, type: date, quality: constant, review: "every row = 2026-03-31; placeholder, not a real event date"}
+      - {src: KYCRiskCategory, name: kyc_risk_category, quality: placeholder}
+      - {src: Tenure Bucket, name: tenure_bucket, quality: placeholder}
+      - {src: TenureBucketOrder, type: int, quality: all_zero}
+      - {src: ROI Bucket, name: roi_bucket, quality: placeholder}
+      - {src: ROI Bucket Order, name: roi_bucket_order, type: int, quality: all_zero}
+      - {src: LoanBook, quality: placeholder}
+      - {src: LoanBookOrder, type: int, quality: all_zero}
+      - {src: TicketSize, note: "bucket label"}
+      - {src: TicketSizeOrder, type: int}
+      - {src: StateCode}
+      - {src: NCAFlag, name: nca_flag, type: bool, quality: constant}
+      - {src: CustomerOnboardDate, type: date, quality: constant, review: "every row = 2026-03-31; placeholder, not a real event date"}
+      - {src: MSME, name: msme, note: "Micro / Small / Medium"}
+      - {src: PortfolioTag, quality: placeholder}
+      - {src: WriteOffTag, type: bool}
+      - {src: WriteOffDate, type: date, quality: constant, review: "every row = 2026-03-31; placeholder, not a real event date"}
+      - {src: WriteOffAmount, type: amount, quality: all_zero}
+      - {src: UnionInd, name: union_ind, quality: placeholder}
+      - {src: MSMEOrder, name: msme_order, type: int}
+      - {src: RestructureFlag, type: bool}
+
+  dim_calendar:
+    description: Calendar / fiscal calendar dimension.
+    source_file: DimCalendar.csv
+    location: s3://opta-s3-demo/nbfc-base-data/DimCalendar/
+    header_column_count: 62
+    line_ending: CRLF
+    grain_candidate: [calendar_date]   # UNVERIFIED
+    columns:
+      - {src: DateKey, type: int, note: "yyyymmdd, 20220401-20320331"}
+      - {src: DayOfTheMonth, type: int}
+      - {src: CalendarDayName}
+      - {src: DayOfTheWeek, type: int, review: "1 = Sunday or Monday?"}
+      - {src: DayOfWeekInMonth, type: int}
+      - {src: DayOfTheYear, type: int}
+      - {src: IsWeekend, type: bool}
+      - {src: ISOWeek, name: iso_week, type: int}
+      - {src: FirstDayOfISOWeek, name: first_day_of_iso_week, type: date}
+      - {src: LastDayOfISOWeek, name: last_day_of_iso_week, type: date}
+      - {src: WeekOfMonth, type: int}
+      - {src: CalendarMonthNumber, type: int}
+      - {src: CalendarMonthName}
+      - {src: FirstDayOfMonth, type: date}
+      - {src: LastDatOfMonth, name: last_day_of_month, type: date}
+      - {src: CalendarQuarter, type: int}
+      - {src: FirstDayOfQuarter, type: date}
+      - {src: LastDayOfQuarter, type: date}
+      - {src: ISOYear, name: iso_year, type: int}
+      - {src: CalendarYearFirstDay, type: date}
+      - {src: CalendarYearLastDay, type: date}
+      - {src: IsLeapYear, type: bool}
+      - {src: CalendarYearMonth, note: "yyyy-mm"}
+      - {src: FiscalQuarter, type: int, note: "fiscal year starts 1 April"}
+      - {src: FiscalYearFirstDay, type: date}
+      - {src: FiscalYearLastDay, type: date}
+      - {src: PreviousFiscalYearLastDay, type: date}
+      - {src: IsCompanyHoliday, type: bool, quality: constant}
+      - {src: IsBusinessDay, type: bool}
+      - {src: NextBusinessDay1, type: date}
+      - {src: NextBusinessDay2, type: date}
+      - {src: NextBusinessDay3, type: date}
+      - {src: NextBusinessDay4, type: date}
+      - {src: NextBusinessDay5, type: date}
+      - {src: NextBusinessDay6, type: date}
+      - {src: NextBusinessDay7, type: date}
+      - {src: NextBusinessDay8, type: date}
+      - {src: NextBusinessDay9, type: date}
+      - {src: NextBusinessDay10, type: date}
+      - {src: FinanceWeekOfMonth, type: int}
+      - {src: Date, name: calendar_date, type: date}
+      - {src: Year, name: calendar_year, type: int}
+      - {src: Fiscal Year, name: fiscal_year, note: '''FY yyyy'', named by end year (FY 2024 = Apr 2023-Mar 2024)'}
+      - {src: Month & Year, name: month_year}
+      - {src: FiscalMonthNumber, type: int}
+      - {src: NextBusinessDay, type: date}
+      - {src: DateCounter, type: int}
+      - {src: YearCounter, type: int}
+      - {src: FiscalQuarterCounter, type: int}
+      - {src: FiscalMonthCounter, type: int}
+      - {src: FiscalWeekCounter, type: int}
+      - {src: FinanceWeekCounter, type: int}
+      - {src: FiscalQuarterName}
+      - {src: DateOffset, type: int, review: "relative to export date; stale, do not use"}
+      - {src: FiscalYearOffset, type: int, review: "relative to export date; stale, do not use"}
+      - {src: FiscalMonthOffset, type: int, review: "relative to export date; stale, do not use"}
+      - {src: FiscalQuarterOffset, type: int, review: "relative to export date; stale, do not use"}
+      - {src: FiscalWeekOffset, type: int, review: "relative to export date; stale, do not use"}
+      - {src: FinanceWeekOffset, type: int, review: "relative to export date; stale, do not use"}
+      - {src: PastDateFlag, review: "values Past/Future relative to export date; stale, do not use"}
+      - {src: Month Short, name: month_short}
+      - {src: FiscalMonthOffsetSortOrderPBI, name: fiscal_month_offset_sort_order_pbi, type: int, review: "Power BI artifact"}
+
+  dim_customers:
+    description: Customer master. HIGH PII. Only an allow-listed subset reaches the typed view.
+    source_file: DimCustomerDetails.csv
+    location: s3://opta-s3-demo/nbfc-base-data/DimCustomers/
+    header_column_count: 161
+    line_ending: LF
+    default_pii: direct      # classification kept for when real data replaces the mock data
+    expose_pii_in_view: true # APPROVED 2026-10-18: mock data, all 161 columns in v_dim_customers.
+                             # Set to false (allow-list only) before loading any real customer data.
+    grain_candidate: [customer_id]   # UNVERIFIED (presence of "rn" suggests duplicates)
+    columns:
+      - {src: CustomerId, name: customer_id, pii: identifier}
+      - {src: BranchCode, pii: none}
+      - {src: CustomerType, pii: none}
+      - {src: FirstName}
+      - {src: MiddleName}
+      - {src: LastName}
+      - {src: Salutation, pii: quasi}
+      - {src: Gender, pii: quasi}
+      - {src: DateOfBirthAndIncorporationDate, name: date_of_birth_or_incorporation, type: date, pii: quasi}
+      - {src: Address1}
+      - {src: Address2}
+      - {src: Address3}
+      - {src: LandMark, name: landmark}
+      - {src: CityCode, pii: none, quality: placeholder}
+      - {src: DistrictCode, pii: none, quality: placeholder}
+      - {src: StateCode, pii: none, quality: placeholder}
+      - {src: CountryCode, pii: none, quality: placeholder}
+      - {src: PinCode, pii: quasi}
+      - {src: PANNumber, name: pan_number}
+      - {src: Phone1}
+      - {src: Phone2}
+      - {src: Email}
+      - {src: FatherFirstName}
+      - {src: FatherMiddleName}
+      - {src: FatherLastName}
+      - {src: SpouseFirstName}
+      - {src: SpouseMiddleName}
+      - {src: SpouseLastName}
+      - {src: MotherFirstName}
+      - {src: MotherMiddleName}
+      - {src: MotherLastName}
+      - {src: Caste, pii: sensitive}
+      - {src: Nationality, pii: none, quality: placeholder}
+      - {src: Religion, pii: sensitive}
+      - {src: DomicileStatus, pii: none, quality: placeholder}
+      - {src: GuardianCustomerId}
+      - {src: OrganizationName}
+      - {src: Sector, pii: none, quality: placeholder}
+      - {src: Segment, pii: none, quality: placeholder}
+      - {src: CreditScore, pii: none, quality: placeholder}
+      - {src: ResidenceType, pii: none, quality: placeholder}
+      - {src: RelationshipWithCustomer}
+      - {src: PhotoFilePath}
+      - {src: CentreId, pii: none, quality: placeholder}
+      - {src: CentreName, pii: none}
+      - {src: NomineeCustomerId}
+      - {src: NomineeRelationshipType}
+      - {src: ReferenceCustomerId1}
+      - {src: ReferenceCustomerId2}
+      - {src: ReferenceName}
+      - {src: ReferencePhone}
+      - {src: ReferenceRelationshipType}
+      - {src: ReferenceName2}
+      - {src: ReferenceRelationshipType2}
+      - {src: ReferencePhone2}
+      - {src: MaritalStatus, pii: quasi}
+      - {src: DocumentType1}
+      - {src: ProofType1}
+      - {src: DocumentNumber1}
+      - {src: DateOfIssue1}
+      - {src: DateOfExpiry1}
+      - {src: FilePath1}
+      - {src: DocumentType2}
+      - {src: ProofType2}
+      - {src: DocumentNumber2}
+      - {src: DateOfIssue2}
+      - {src: DateOfExpiry2}
+      - {src: FilePath2}
+      - {src: DocumentType3}
+      - {src: ProofType3}
+      - {src: DocumentNumber3}
+      - {src: DateOfIssue3}
+      - {src: DateOfExpiry3}
+      - {src: FilePath3}
+      - {src: Occupation, pii: none, quality: placeholder}
+      - {src: Employment, pii: none, quality: placeholder}
+      - {src: Language1}
+      - {src: Language2}
+      - {src: Language3}
+      - {src: LanguageProficiency1}
+      - {src: LanguageProficiency2}
+      - {src: LanguageProficiency3}
+      - {src: Education, pii: none, quality: placeholder}
+      - {src: AnnualIncome, type: amount, pii: sensitive}
+      - {src: AddressType, pii: none}
+      - {src: Alt1Address1}
+      - {src: Alt1Address2}
+      - {src: Alt1Address3}
+      - {src: Alt1LandMark}
+      - {src: Alt1CityCode}
+      - {src: Alt1DistrictCode}
+      - {src: Alt1StateCode}
+      - {src: Alt1CountryCode}
+      - {src: Alt1PinCode}
+      - {src: AltAddressType1}
+      - {src: Alt1Phone1}
+      - {src: Alt1Phone2}
+      - {src: Alt1Email}
+      - {src: Alt2Address1}
+      - {src: Alt2Address2}
+      - {src: Alt2Address3}
+      - {src: Alt2LandMark}
+      - {src: Alt2CityCode}
+      - {src: Alt2DistrictCode}
+      - {src: Alt2StateCode}
+      - {src: Alt2CountryCode}
+      - {src: Alt2PinCode}
+      - {src: AltAddressType2}
+      - {src: Alt2Phone1}
+      - {src: Alt2Phone2}
+      - {src: Alt2Email}
+      - {src: BankName1}
+      - {src: BranchName1}
+      - {src: BranchAddress1}
+      - {src: IfscCode1}
+      - {src: MicrCode1}
+      - {src: AccountType1}
+      - {src: AccountNumber1}
+      - {src: AccountHolderName1}
+      - {src: BankName2}
+      - {src: BranchName2}
+      - {src: BranchAddress2}
+      - {src: IfscCode2}
+      - {src: MicrCode2}
+      - {src: AccountType2}
+      - {src: AccountNumber2}
+      - {src: AccountHolderName2}
+      - {src: BankName3}
+      - {src: BranchName3}
+      - {src: BranchAddress3}
+      - {src: IfscCode3}
+      - {src: MicrCode3}
+      - {src: AccountType3}
+      - {src: AccountNumber3}
+      - {src: AccountHolderName3}
+      - {src: UIDNum, name: uid_num}
+      - {src: GSTIN, name: gstin}
+      - {src: TDSTaxRateCode, name: tds_tax_rate_code, pii: none, quality: placeholder}
+      - {src: GSTTaxRateCode, name: gst_tax_rate_code, pii: none, quality: placeholder}
+      - {src: RegistrationNo}
+      - {src: CINNumber, name: cin_number}
+      - {src: LegalEntityIdentifier}
+      - {src: LeiExpiryDate}
+      - {src: UIN, name: uin}
+      - {src: CkycNumber}
+      - {src: NregaCard}
+      - {src: VoterId}
+      - {src: DrivingLicense}
+      - {src: Passport}
+      - {src: Tag, pii: none, quality: placeholder}
+      - {src: GeoLocationLatitude}
+      - {src: GeoLocationLongitude}
+      - {src: OriginalCustomerId, pii: identifier}
+      - {src: Status, pii: none, quality: placeholder}
+      - {src: DateOfExpiry}
+      - {src: Filename}
+      - {src: RecordInsMethod, pii: none, quality: placeholder}
+      - {src: RecordInsTS, name: record_ins_date, type: date, pii: none, quality: constant}
+      - {src: rn, name: rn, type: int, pii: none, quality: all_zero}
+      - {src: ReportDate, type: date, pii: none, quality: constant}
+      - {src: DerivedCICType, name: derived_cic_type, pii: none, quality: placeholder}
+
+  dim_par_bucket:
+    description: Portfolio-at-risk bucket lookup by overdue days.
+    source_file: DimPARBucket.csv
+    location: s3://opta-s3-demo/nbfc-base-data/DimPARBucket/
+    header_column_count: 5
+    line_ending: CRLF
+    grain_candidate: [od_days]   # UNVERIFIED
+    columns:
+      - {src: oddays, name: od_days, type: int}
+      - {src: parbucket, name: par_bucket}
+      - {src: IntervalSplitYearly}
+      - {src: IntervalSplitYearlySortOrder, type: int}
+      - {src: parbucketOrder, name: par_bucket_order, type: int}

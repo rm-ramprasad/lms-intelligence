@@ -1,0 +1,252 @@
+# Governed metrics for the query service (V0.1).
+#
+# measure.aggregation
+#   sum             SUM over one or more columns (columns are added row-wise, NULL -> 0)
+#   count_distinct  COUNT(DISTINCT column); the only way an identifier column may be used
+#   ratio           SUM(numerator metric) / NULLIF(SUM(denominator metric), 0); never averaged
+# measure.condition (optional): row condition applied inside the aggregate (CASE WHEN), so
+#   ratios can combine a conditioned numerator with an unconditioned denominator.
+#
+# behavior
+#   snapshot  balance at a month-end snapshot. SEMI-ADDITIVE: may be summed across accounts and
+#             dimensions within ONE month, never across months. The compiler always resolves to
+#             the latest snapshot in the period (or per time bucket).
+#   period    flow within the month. ADDITIVE: may be summed across months.
+#
+# status: approved | pending_approval. Only approved metrics are executable.
+# Approval 2026-10-18 (user): month-end snapshots; balances semi-additive; flows additive;
+# K2-K9 defaults accepted (see docs/milestones/milestone_2_plan.md).
+
+version: 1
+
+metrics:
+
+  - id: total_outstanding
+    name: Total outstanding
+    view: v_account_summary
+    measure: {aggregation: sum, columns: [total_os]}
+    behavior: snapshot
+    additivity: semi_additive
+    period_required: false
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: currency, unit: INR, decimals: 2}
+    definition: Sum of TotalOS across accounts at a month-end snapshot.
+    status: approved
+    validation_sql: |
+      SELECT SUM(total_os) FROM analytics_poc.v_account_summary
+      WHERE transaction_date = (SELECT MAX(transaction_date) FROM analytics_poc.v_account_summary)
+
+  - id: account_count
+    name: Number of accounts
+    view: v_account_summary
+    measure: {aggregation: count_distinct, columns: [account_number]}
+    behavior: snapshot
+    additivity: semi_additive
+    period_required: false
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: integer}
+    definition: Distinct loan accounts present in a month-end snapshot (any status).
+    status: approved
+    validation_sql: |
+      SELECT COUNT(DISTINCT account_number) FROM analytics_poc.v_account_summary
+      WHERE transaction_date = (SELECT MAX(transaction_date) FROM analytics_poc.v_account_summary)
+
+  - id: active_account_count
+    name: Number of active accounts
+    view: v_account_summary
+    measure: {aggregation: count_distinct, columns: [account_number], condition: {column: ac_status, op: eq, value: Active}}
+    behavior: snapshot
+    additivity: semi_additive
+    period_required: false
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: integer}
+    definition: Distinct accounts with AcStatus = 'Active' in a month-end snapshot.
+    status: approved
+    validation_sql: |
+      SELECT COUNT(DISTINCT account_number) FROM analytics_poc.v_account_summary
+      WHERE ac_status = 'Active'
+        AND transaction_date = (SELECT MAX(transaction_date) FROM analytics_poc.v_account_summary)
+
+  - id: sanctioned_amount
+    name: Sanctioned amount
+    view: v_account_summary
+    measure: {aggregation: sum, columns: [sanctioned_amount]}
+    behavior: snapshot
+    additivity: semi_additive
+    period_required: false
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: currency, unit: INR, decimals: 2}
+    definition: Sum of SanctionedAmount for accounts in a month-end snapshot.
+    status: approved
+    validation_sql: |
+      SELECT SUM(sanctioned_amount) FROM analytics_poc.v_account_summary
+      WHERE transaction_date = (SELECT MAX(transaction_date) FROM analytics_poc.v_account_summary)
+
+  - id: disbursement_amount
+    name: Disbursement amount
+    view: v_account_summary
+    measure: {aggregation: sum, columns: [disbursement_amount]}
+    behavior: period
+    additivity: additive
+    period_required: true
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: currency, unit: INR, decimals: 2}
+    definition: Amount disbursed during the month(s) in the period.
+    status: approved
+    validation_sql: |
+      SELECT SUM(disbursement_amount) FROM analytics_poc.v_account_summary
+      WHERE transaction_date BETWEEN DATE '2025-04-01' AND DATE '2026-03-31'
+
+  - id: demand_amount
+    name: Demand amount
+    view: v_account_summary
+    measure: {aggregation: sum, columns: [demand_amount]}
+    behavior: period
+    additivity: additive
+    period_required: true
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: currency, unit: INR, decimals: 2}
+    definition: Instalment demand raised during the month(s) in the period.
+    status: approved
+    validation_sql: |
+      SELECT SUM(demand_amount) FROM analytics_poc.v_account_summary
+      WHERE transaction_date BETWEEN DATE '2025-04-01' AND DATE '2026-03-31'
+
+  - id: repayment_amount
+    name: Repayment amount
+    view: v_account_summary
+    measure: {aggregation: sum, columns: [repayment_amount]}
+    behavior: period
+    additivity: additive
+    period_required: true
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: currency, unit: INR, decimals: 2}
+    definition: Repayments received during the month(s) in the period; negative values (reversals) are netted.
+    status: approved
+    validation_sql: |
+      SELECT SUM(repayment_amount) FROM analytics_poc.v_account_summary
+      WHERE transaction_date BETWEEN DATE '2025-04-01' AND DATE '2026-03-31'
+
+  - id: current_demand_collected
+    name: Collection against current-month demand
+    view: v_account_summary
+    measure: {aggregation: sum, columns: [repayment_for_current_month_demand]}
+    behavior: period
+    additivity: additive
+    period_required: true
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: currency, unit: INR, decimals: 2}
+    definition: Repayment applied to the demand raised in the same month.
+    status: approved
+    validation_sql: |
+      SELECT SUM(repayment_for_current_month_demand) FROM analytics_poc.v_account_summary
+      WHERE transaction_date BETWEEN DATE '2025-04-01' AND DATE '2026-03-31'
+
+  - id: collection_efficiency
+    name: Collection efficiency
+    view: v_account_summary
+    measure: {aggregation: ratio, numerator: current_demand_collected, denominator: demand_amount}
+    behavior: period
+    additivity: non_additive
+    period_required: true
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: percent, decimals: 2}
+    definition: Collection against current-month demand divided by demand, over the period.
+    status: approved
+    validation_sql: |
+      SELECT CAST(SUM(repayment_for_current_month_demand) AS double) / NULLIF(CAST(SUM(demand_amount) AS double), 0)
+      FROM analytics_poc.v_account_summary
+      WHERE transaction_date BETWEEN DATE '2025-04-01' AND DATE '2026-03-31'
+
+  - id: par_30_plus_amount
+    name: PAR 30+ outstanding
+    view: v_account_summary
+    measure: {aggregation: sum, columns: [par_31_to_60, par_61_to_90, par_over_90]}
+    behavior: snapshot
+    additivity: semi_additive
+    period_required: false
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: currency, unit: INR, decimals: 2}
+    definition: Outstanding of accounts more than 30 days past due (PAR 31-60 + 61-90 + 90+).
+    status: approved
+    validation_sql: |
+      SELECT SUM(COALESCE(par_31_to_60, 0) + COALESCE(par_61_to_90, 0) + COALESCE(par_over_90, 0))
+      FROM analytics_poc.v_account_summary
+      WHERE transaction_date = (SELECT MAX(transaction_date) FROM analytics_poc.v_account_summary)
+
+  - id: par_30_plus_ratio
+    name: PAR 30+ ratio
+    view: v_account_summary
+    measure: {aggregation: ratio, numerator: par_30_plus_amount, denominator: total_outstanding}
+    behavior: snapshot
+    additivity: non_additive
+    period_required: false
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: percent, decimals: 2}
+    definition: PAR 30+ outstanding divided by total outstanding at a month-end snapshot.
+    status: approved
+    validation_sql: |
+      SELECT CAST(SUM(COALESCE(par_31_to_60, 0) + COALESCE(par_61_to_90, 0) + COALESCE(par_over_90, 0)) AS double)
+             / NULLIF(CAST(SUM(total_os) AS double), 0)
+      FROM analytics_poc.v_account_summary
+      WHERE transaction_date = (SELECT MAX(transaction_date) FROM analytics_poc.v_account_summary)
+
+  - id: npa_outstanding
+    name: NPA outstanding
+    view: v_account_summary
+    measure: {aggregation: sum, columns: [total_os], condition: {column: npa_flag, op: eq, value: true}}
+    behavior: snapshot
+    additivity: semi_additive
+    period_required: false
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: currency, unit: INR, decimals: 2}
+    definition: Total outstanding of accounts with NPAFlag = Yes at a month-end snapshot.
+    status: approved
+    validation_sql: |
+      SELECT SUM(total_os) FROM analytics_poc.v_account_summary
+      WHERE npa_flag AND transaction_date = (SELECT MAX(transaction_date) FROM analytics_poc.v_account_summary)
+
+  - id: gross_npa_ratio
+    name: Gross NPA ratio
+    view: v_account_summary
+    measure: {aggregation: ratio, numerator: npa_outstanding, denominator: total_outstanding}
+    behavior: snapshot
+    additivity: non_additive
+    period_required: false
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: percent, decimals: 2}
+    definition: NPA outstanding divided by total outstanding at a month-end snapshot.
+    status: approved
+    validation_sql: |
+      SELECT CAST(SUM(CASE WHEN npa_flag THEN total_os END) AS double) / NULLIF(CAST(SUM(total_os) AS double), 0)
+      FROM analytics_poc.v_account_summary
+      WHERE transaction_date = (SELECT MAX(transaction_date) FROM analytics_poc.v_account_summary)
+
+  - id: write_off_outstanding
+    name: Written-off outstanding
+    view: v_account_summary
+    measure: {aggregation: sum, columns: [total_os], condition: {column: write_off_flag, op: eq, value: true}}
+    behavior: snapshot
+    additivity: semi_additive
+    period_required: false
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: currency, unit: INR, decimals: 2}
+    definition: Outstanding of accounts with WriteOffFlag = Y. PENDING — confirm whether write-offs should report TotalOS.
+    status: pending_approval
+    validation_sql: |
+      SELECT SUM(total_os) FROM analytics_poc.v_account_summary
+      WHERE write_off_flag AND transaction_date = (SELECT MAX(transaction_date) FROM analytics_poc.v_account_summary)

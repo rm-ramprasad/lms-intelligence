@@ -1,0 +1,12 @@
+{
+  "ResultConfiguration": {
+    "OutputLocation": "s3://analytics-poc-athena-results-791896160716-ap-south-1/query-results/",
+    "EncryptionConfiguration": { "EncryptionOption": "SSE_S3" },
+    "ExpectedBucketOwner": "791896160716"
+  },
+  "EnforceWorkGroupConfiguration": true,
+  "PublishCloudWatchMetricsEnabled": true,
+  "BytesScannedCutoffPerQuery": 1073741824,
+  "RequesterPaysEnabled": false,
+  "EngineVersion": { "SelectedEngineVersion": "AUTO" }
+}

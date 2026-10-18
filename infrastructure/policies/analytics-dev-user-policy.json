@@ -1,0 +1,89 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "SourceBucketListPrefixOnly",
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket", "s3:GetBucketLocation"],
+      "Resource": "arn:aws:s3:::opta-s3-demo",
+      "Condition": {
+        "StringLike": { "s3:prefix": ["", "nbfc-base-data/", "nbfc-base-data/*"] }
+      }
+    },
+    {
+      "Sid": "SourceObjectsReadOnly",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": "arn:aws:s3:::opta-s3-demo/nbfc-base-data/*"
+    },
+    {
+      "Sid": "AthenaResultsBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:AbortMultipartUpload",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": [
+        "arn:aws:s3:::analytics-poc-athena-results-791896160716-ap-south-1",
+        "arn:aws:s3:::analytics-poc-athena-results-791896160716-ap-south-1/*"
+      ]
+    },
+    {
+      "Sid": "AthenaRestrictedWorkgroupOnly",
+      "Effect": "Allow",
+      "Action": [
+        "athena:StartQueryExecution",
+        "athena:StopQueryExecution",
+        "athena:GetQueryExecution",
+        "athena:GetQueryResults",
+        "athena:ListQueryExecutions",
+        "athena:GetWorkGroup",
+        "athena:BatchGetQueryExecution"
+      ],
+      "Resource": "arn:aws:athena:ap-south-1:791896160716:workgroup/analytics_poc_wg"
+    },
+    {
+      "Sid": "AthenaListing",
+      "Effect": "Allow",
+      "Action": ["athena:ListWorkGroups", "athena:ListDataCatalogs", "athena:ListDatabases"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "GlueCatalogAnalyticsPocOnly",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetDatabase",
+        "glue:GetDatabases",
+        "glue:CreateDatabase",
+        "glue:GetTable",
+        "glue:GetTables",
+        "glue:CreateTable",
+        "glue:UpdateTable",
+        "glue:DeleteTable",
+        "glue:GetPartition",
+        "glue:GetPartitions"
+      ],
+      "Resource": [
+        "arn:aws:glue:ap-south-1:791896160716:catalog",
+        "arn:aws:glue:ap-south-1:791896160716:database/analytics_poc",
+        "arn:aws:glue:ap-south-1:791896160716:table/analytics_poc/*"
+      ]
+    },
+    {
+      "Sid": "DenySourceWrites",
+      "Effect": "Deny",
+      "Action": ["s3:PutObject", "s3:DeleteObject", "s3:DeleteObjectVersion", "s3:PutObjectAcl", "s3:PutBucketPolicy", "s3:DeleteBucket"],
+      "Resource": ["arn:aws:s3:::opta-s3-demo", "arn:aws:s3:::opta-s3-demo/*"]
+    },
+    {
+      "Sid": "DenyOutOfScopeServices",
+      "Effect": "Deny",
+      "Action": ["glue:CreateCrawler", "glue:StartCrawler", "bedrock:*", "rds:*"],
+      "Resource": "*"
+    }
+  ]
+}

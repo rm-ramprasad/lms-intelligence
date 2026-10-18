@@ -1,0 +1,570 @@
+{
+ "identity": {
+  "arn": "arn:aws:iam::791896160716:user/analytics-dev-user",
+  "account": "791896160716",
+  "region": "ap-south-1"
+ },
+ "workgroup": {
+  "name": "analytics_poc_wg",
+  "enforced": true,
+  "bytes_scanned_cutoff": 1073741824,
+  "output": "s3://analytics-poc-athena-results-791896160716-ap-south-1/query-results/",
+  "encryption": "SSE_S3"
+ },
+ "database": "analytics_poc",
+ "objects": {
+  "raw_account_summary": {
+   "type": "external_table",
+   "column_count": 91,
+   "location": "s3://opta-s3-demo/nbfc-base-data/AccountSummary"
+  },
+  "raw_dim_adm": {
+   "type": "external_table",
+   "column_count": 68,
+   "location": "s3://opta-s3-demo/nbfc-base-data/DimADM"
+  },
+  "raw_dim_calendar": {
+   "type": "external_table",
+   "column_count": 62,
+   "location": "s3://opta-s3-demo/nbfc-base-data/DimCalendar"
+  },
+  "raw_dim_customers": {
+   "type": "external_table",
+   "column_count": 161,
+   "location": "s3://opta-s3-demo/nbfc-base-data/DimCustomers"
+  },
+  "raw_dim_par_bucket": {
+   "type": "external_table",
+   "column_count": 5,
+   "location": "s3://opta-s3-demo/nbfc-base-data/DimPARBucket"
+  },
+  "v_account_summary": {
+   "type": "view",
+   "column_count": 91,
+   "columns_by_role": {
+    "date": [
+     "transaction_date",
+     "maturity_date",
+     "nca_transaction_date"
+    ],
+    "dimension": [
+     "loan_group",
+     "product_code",
+     "branch_code",
+     "ac_status",
+     "vertical [placeholder]",
+     "deposit [placeholder]",
+     "industry [placeholder]",
+     "segment [placeholder]",
+     "facility [placeholder]",
+     "security",
+     "nature",
+     "purpose [placeholder]",
+     "customer_asset_category [placeholder]",
+     "loan_asset_category [placeholder]",
+     "state_name",
+     "sanction_ref_no [placeholder]",
+     "par_bucket",
+     "ticket_size",
+     "book_source [placeholder]",
+     "state_code",
+     "sanction_pull_flag [placeholder]",
+     "size_category"
+    ],
+    "identifier": [
+     "account_number",
+     "customer_id"
+    ],
+    "measure": [
+     "interest_rate",
+     "emi",
+     "sanctioned_amount",
+     "ledger_balance",
+     "total_os",
+     "customer_provision_amount",
+     "loan_provision_amount",
+     "net_payoff_amount [all_zero]",
+     "total_fees_due [all_zero]",
+     "demand_amount",
+     "demand_principal_amount",
+     "demand_normal_interest_amount",
+     "repayment_amount",
+     "repaid_principal_amount",
+     "repaid_normal_interest_amount",
+     "disbursement_amount",
+     "net_disbursement",
+     "advance_from_customers",
+     "par_0",
+     "par_1_to_30",
+     "par_31_to_60",
+     "par_61_to_90",
+     "par_over_90",
+     "prepayment_amount",
+     "prepayment_principal_amount",
+     "prepayment_normal_interest_amount [all_zero]",
+     "pre_closure_amount",
+     "pre_closure_principal_amount",
+     "pre_closure_normal_interest_amount [all_zero]",
+     "eom_od_bucket_0 [all_zero]",
+     "eom_od_bucket_1_to_30",
+     "eom_od_bucket_31_to_60",
+     "eom_od_bucket_61_to_90",
+     "eom_od_bucket_over_90",
+     "eom_total_overdue",
+     "bom_od_bucket_0 [all_zero]",
+     "bom_od_bucket_1_to_30",
+     "bom_od_bucket_31_to_60",
+     "bom_od_bucket_61_to_90",
+     "bom_od_bucket_over_90",
+     "scheduled_repayment",
+     "scheduled_repayment_principal_amount",
+     "scheduled_repayment_normal_interest_amount",
+     "principal_repaid_for_current_month_demand",
+     "interest_repaid_for_current_month_demand",
+     "repayment_for_current_month_demand",
+     "principal_repaid_for_overdue_demand",
+     "interest_repaid_for_overdue_demand",
+     "repayment_for_overdue_demand",
+     "eom_total_principal_due",
+     "adm_cumulative_principal_repaid",
+     "sanction_limit [all_zero]",
+     "daily_avg_aum"
+    ],
+    "numeric_attribute": [
+     "tenure",
+     "loan_dpd_days",
+     "max_od_days",
+     "rbi_od_days",
+     "rbi_od_days_from_lms"
+    ],
+    "flag": [
+     "npa_flag",
+     "nca_flag",
+     "write_off_flag",
+     "restructure_flag"
+    ],
+    "sort_or_helper": [
+     "par_bucket_order",
+     "ticket_size_order"
+    ]
+   },
+   "definition_retrieved": true,
+   "source": [
+    "analytics_poc.raw_account_summary"
+   ]
+  },
+  "v_dim_adm": {
+   "type": "view",
+   "column_count": 68,
+   "columns_by_role": {
+    "date": [
+     "transaction_date [constant]",
+     "disbursement_date",
+     "ac_closed_date [constant]",
+     "npa_marking_date [constant]",
+     "npa_unmarking_date [constant]",
+     "sanction_date [constant]",
+     "lei_expiry_date [constant]",
+     "customer_onboard_date [constant]",
+     "write_off_date [constant]"
+    ],
+    "dimension": [
+     "loan_group",
+     "customer_name",
+     "product_name",
+     "product_code",
+     "branch_code",
+     "branch_name",
+     "ac_status [constant]",
+     "hypothecated_to",
+     "primary_security",
+     "collateral_security",
+     "udyam_registration_no",
+     "bc_partner_name",
+     "plant_and_machinery_new [placeholder]",
+     "acceptable_liquid_instrument [placeholder]",
+     "securitization_of_receivables [placeholder]",
+     "enterprise_type [placeholder]",
+     "industry_type [placeholder]",
+     "vertical [placeholder]",
+     "size_category",
+     "deposit [placeholder]",
+     "industry [placeholder]",
+     "segment [placeholder]",
+     "facility [placeholder]",
+     "security",
+     "nature",
+     "purpose [placeholder]",
+     "customer_asset_category [placeholder]",
+     "loan_asset_category [placeholder]",
+     "product_sub_category",
+     "product_frequency [placeholder]",
+     "sanction_ref_no [placeholder]",
+     "kyc_risk_category [placeholder]",
+     "tenure_bucket [placeholder]",
+     "roi_bucket [placeholder]",
+     "loan_book [placeholder]",
+     "ticket_size",
+     "state_code",
+     "msme",
+     "portfolio_tag [placeholder]",
+     "union_ind [placeholder]"
+    ],
+    "identifier": [
+     "account_number",
+     "customer_id"
+    ],
+    "measure": [
+     "interest_rate",
+     "delayed_charge_rate [all_zero]",
+     "sanctioned_amount",
+     "disbursed_amount",
+     "sanction_limit [all_zero]",
+     "write_off_amount [all_zero]"
+    ],
+    "numeric_attribute": [
+     "tenure",
+     "actual_loan_tenure [all_zero]"
+    ],
+    "flag": [
+     "npa_flag [constant]",
+     "nca_flag [constant]",
+     "write_off_tag",
+     "restructure_flag"
+    ],
+    "sort_or_helper": [
+     "tenure_bucket_order [all_zero]",
+     "roi_bucket_order [all_zero]",
+     "loan_book_order [all_zero]",
+     "ticket_size_order",
+     "msme_order"
+    ]
+   },
+   "definition_retrieved": true,
+   "source": [
+    "analytics_poc.raw_dim_adm"
+   ]
+  },
+  "v_dim_calendar": {
+   "type": "view",
+   "column_count": 62,
+   "columns_by_role": {
+    "numeric_attribute": [
+     "date_key",
+     "day_of_the_month",
+     "day_of_the_week",
+     "day_of_week_in_month",
+     "day_of_the_year",
+     "iso_week",
+     "week_of_month",
+     "calendar_month_number",
+     "calendar_quarter",
+     "iso_year",
+     "fiscal_quarter",
+     "finance_week_of_month",
+     "calendar_year",
+     "fiscal_month_number",
+     "fiscal_month_offset_sort_order_pbi"
+    ],
+    "dimension": [
+     "calendar_day_name",
+     "calendar_month_name",
+     "calendar_year_month",
+     "fiscal_year",
+     "month_year",
+     "fiscal_quarter_name",
+     "past_date_flag",
+     "month_short"
+    ],
+    "flag": [
+     "is_weekend",
+     "is_leap_year",
+     "is_company_holiday [constant]",
+     "is_business_day"
+    ],
+    "date": [
+     "first_day_of_iso_week",
+     "last_day_of_iso_week",
+     "first_day_of_month",
+     "last_day_of_month",
+     "first_day_of_quarter",
+     "last_day_of_quarter",
+     "calendar_year_first_day",
+     "calendar_year_last_day",
+     "fiscal_year_first_day",
+     "fiscal_year_last_day",
+     "previous_fiscal_year_last_day",
+     "next_business_day_1",
+     "next_business_day_2",
+     "next_business_day_3",
+     "next_business_day_4",
+     "next_business_day_5",
+     "next_business_day_6",
+     "next_business_day_7",
+     "next_business_day_8",
+     "next_business_day_9",
+     "next_business_day_10",
+     "calendar_date",
+     "next_business_day"
+    ],
+    "sort_or_helper": [
+     "date_counter",
+     "year_counter",
+     "fiscal_quarter_counter",
+     "fiscal_month_counter",
+     "fiscal_week_counter",
+     "finance_week_counter",
+     "date_offset",
+     "fiscal_year_offset",
+     "fiscal_month_offset",
+     "fiscal_quarter_offset",
+     "fiscal_week_offset",
+     "finance_week_offset"
+    ]
+   },
+   "definition_retrieved": true,
+   "source": [
+    "analytics_poc.raw_dim_calendar"
+   ]
+  },
+  "v_dim_customers": {
+   "type": "view",
+   "column_count": 161,
+   "columns_by_role": {
+    "identifier": [
+     "customer_id",
+     "original_customer_id"
+    ],
+    "dimension": [
+     "branch_code",
+     "customer_type",
+     "first_name",
+     "middle_name",
+     "last_name",
+     "salutation",
+     "gender",
+     "address_1",
+     "address_2",
+     "address_3",
+     "landmark",
+     "city_code [placeholder]",
+     "district_code [placeholder]",
+     "state_code [placeholder]",
+     "country_code [placeholder]",
+     "pin_code",
+     "pan_number",
+     "phone_1",
+     "phone_2",
+     "email",
+     "father_first_name",
+     "father_middle_name",
+     "father_last_name",
+     "spouse_first_name",
+     "spouse_middle_name",
+     "spouse_last_name",
+     "mother_first_name",
+     "mother_middle_name",
+     "mother_last_name",
+     "caste",
+     "nationality [placeholder]",
+     "religion",
+     "domicile_status [placeholder]",
+     "guardian_customer_id",
+     "organization_name",
+     "sector [placeholder]",
+     "segment [placeholder]",
+     "credit_score [placeholder]",
+     "residence_type [placeholder]",
+     "relationship_with_customer",
+     "photo_file_path",
+     "centre_id [placeholder]",
+     "centre_name",
+     "nominee_customer_id",
+     "nominee_relationship_type",
+     "reference_customer_id_1",
+     "reference_customer_id_2",
+     "reference_name",
+     "reference_phone",
+     "reference_relationship_type",
+     "reference_name_2",
+     "reference_relationship_type_2",
+     "reference_phone_2",
+     "marital_status",
+     "document_type_1",
+     "proof_type_1",
+     "document_number_1",
+     "date_of_issue_1",
+     "date_of_expiry_1",
+     "file_path_1",
+     "document_type_2",
+     "proof_type_2",
+     "document_number_2",
+     "date_of_issue_2",
+     "date_of_expiry_2",
+     "file_path_2",
+     "document_type_3",
+     "proof_type_3",
+     "document_number_3",
+     "date_of_issue_3",
+     "date_of_expiry_3",
+     "file_path_3",
+     "occupation [placeholder]",
+     "employment [placeholder]",
+     "language_1",
+     "language_2",
+     "language_3",
+     "language_proficiency_1",
+     "language_proficiency_2",
+     "language_proficiency_3",
+     "education [placeholder]",
+     "address_type",
+     "alt_1_address_1",
+     "alt_1_address_2",
+     "alt_1_address_3",
+     "alt_1_land_mark",
+     "alt_1_city_code",
+     "alt_1_district_code",
+     "alt_1_state_code",
+     "alt_1_country_code",
+     "alt_1_pin_code",
+     "alt_address_type_1",
+     "alt_1_phone_1",
+     "alt_1_phone_2",
+     "alt_1_email",
+     "alt_2_address_1",
+     "alt_2_address_2",
+     "alt_2_address_3",
+     "alt_2_land_mark",
+     "alt_2_city_code",
+     "alt_2_district_code",
+     "alt_2_state_code",
+     "alt_2_country_code",
+     "alt_2_pin_code",
+     "alt_address_type_2",
+     "alt_2_phone_1",
+     "alt_2_phone_2",
+     "alt_2_email",
+     "bank_name_1",
+     "branch_name_1",
+     "branch_address_1",
+     "ifsc_code_1",
+     "micr_code_1",
+     "account_type_1",
+     "account_number_1",
+     "account_holder_name_1",
+     "bank_name_2",
+     "branch_name_2",
+     "branch_address_2",
+     "ifsc_code_2",
+     "micr_code_2",
+     "account_type_2",
+     "account_number_2",
+     "account_holder_name_2",
+     "bank_name_3",
+     "branch_name_3",
+     "branch_address_3",
+     "ifsc_code_3",
+     "micr_code_3",
+     "account_type_3",
+     "account_number_3",
+     "account_holder_name_3",
+     "uid_num",
+     "gstin",
+     "tds_tax_rate_code [placeholder]",
+     "gst_tax_rate_code [placeholder]",
+     "registration_no",
+     "cin_number",
+     "legal_entity_identifier",
+     "lei_expiry_date",
+     "uin",
+     "ckyc_number",
+     "nrega_card",
+     "voter_id",
+     "driving_license",
+     "passport",
+     "tag [placeholder]",
+     "geo_location_latitude",
+     "geo_location_longitude",
+     "status [placeholder]",
+     "date_of_expiry",
+     "filename",
+     "record_ins_method [placeholder]",
+     "derived_cic_type [placeholder]"
+    ],
+    "date": [
+     "date_of_birth_or_incorporation",
+     "record_ins_date [constant]",
+     "report_date [constant]"
+    ],
+    "measure": [
+     "annual_income"
+    ],
+    "numeric_attribute": [
+     "rn [all_zero]"
+    ]
+   },
+   "definition_retrieved": true,
+   "source": [
+    "analytics_poc.raw_dim_customers"
+   ]
+  },
+  "v_dim_par_bucket": {
+   "type": "view",
+   "column_count": 5,
+   "columns_by_role": {
+    "numeric_attribute": [
+     "od_days"
+    ],
+    "dimension": [
+     "par_bucket",
+     "interval_split_yearly"
+    ],
+    "sort_or_helper": [
+     "interval_split_yearly_sort_order",
+     "par_bucket_order"
+    ]
+   },
+   "definition_retrieved": true,
+   "source": [
+    "analytics_poc.raw_dim_par_bucket"
+   ]
+  }
+ },
+ "candidate_join_keys": {
+  "account_number": [
+   "v_account_summary",
+   "v_dim_adm"
+  ],
+  "branch_code": [
+   "v_account_summary",
+   "v_dim_adm",
+   "v_dim_customers"
+  ],
+  "customer_id": [
+   "v_account_summary",
+   "v_dim_adm",
+   "v_dim_customers"
+  ],
+  "lei_expiry_date": [
+   "v_dim_adm",
+   "v_dim_customers"
+  ],
+  "par_bucket": [
+   "v_account_summary",
+   "v_dim_par_bucket"
+  ],
+  "product_code": [
+   "v_account_summary",
+   "v_dim_adm"
+  ],
+  "state_code": [
+   "v_account_summary",
+   "v_dim_adm",
+   "v_dim_customers"
+  ],
+  "transaction_date": [
+   "v_account_summary",
+   "v_dim_adm"
+  ]
+ }
+}

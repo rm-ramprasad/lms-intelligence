@@ -1,0 +1,33 @@
+# Governed dimensions. Only these may be used for GROUP BY or filters.
+# Identifier and PII columns are never dimensions (enforced by semantic_loader).
+#
+# kind: attribute | time
+#   time dimensions are derived from the view's snapshot date column at a fixed grain;
+#   they are groupable but not filterable (use QuerySpec.period instead).
+# type: string | boolean
+# operators: allowed filter operators (eq, ne, in, not_in)
+# sort_column: optional column giving the business order (ORDER BY MIN(sort_column))
+
+version: 1
+
+dimensions:
+
+  # ---- time (v_account_summary.transaction_date, month-end snapshots) ----
+  - {id: month, label: Month, kind: time, grain: month, view: v_account_summary, column: transaction_date, groupable: true, filterable: false}
+  - {id: quarter, label: Calendar quarter, kind: time, grain: quarter, view: v_account_summary, column: transaction_date, groupable: true, filterable: false}
+  - {id: year, label: Calendar year, kind: time, grain: year, view: v_account_summary, column: transaction_date, groupable: true, filterable: false}
+  - {id: fiscal_year, label: "Fiscal year (Apr-Mar, named by end year)", kind: time, grain: fiscal_year, view: v_account_summary, column: transaction_date, groupable: true, filterable: false}
+
+  # ---- attributes ----
+  - {id: loan_group, label: Loan group, kind: attribute, type: string, view: v_account_summary, column: loan_group, groupable: true, filterable: true, operators: [eq, ne, in, not_in]}
+  - {id: product_code, label: Product, kind: attribute, type: string, view: v_account_summary, column: product_code, groupable: true, filterable: true, operators: [eq, ne, in, not_in]}
+  - {id: branch_code, label: Branch, kind: attribute, type: string, view: v_account_summary, column: branch_code, groupable: true, filterable: true, operators: [eq, ne, in, not_in]}
+  - {id: state_name, label: State, kind: attribute, type: string, view: v_account_summary, column: state_name, groupable: true, filterable: true, operators: [eq, ne, in, not_in]}
+  - {id: state_code, label: State code, kind: attribute, type: string, view: v_account_summary, column: state_code, groupable: true, filterable: true, operators: [eq, ne, in, not_in]}
+  - {id: account_status, label: Account status, kind: attribute, type: string, view: v_account_summary, column: ac_status, groupable: true, filterable: true, operators: [eq, ne, in, not_in]}
+  - {id: business_nature, label: New business / renewal, kind: attribute, type: string, view: v_account_summary, column: nature, groupable: true, filterable: true, operators: [eq, ne, in, not_in]}
+  - {id: par_bucket, label: PAR bucket, kind: attribute, type: string, view: v_account_summary, column: par_bucket, sort_column: par_bucket_order, groupable: true, filterable: true, operators: [eq, ne, in, not_in]}
+  - {id: ticket_size, label: Ticket size, kind: attribute, type: string, view: v_account_summary, column: ticket_size, sort_column: ticket_size_order, groupable: true, filterable: true, operators: [eq, ne, in, not_in]}
+  - {id: npa_flag, label: NPA, kind: attribute, type: boolean, view: v_account_summary, column: npa_flag, groupable: true, filterable: true, operators: [eq]}
+  - {id: write_off_flag, label: Written off, kind: attribute, type: boolean, view: v_account_summary, column: write_off_flag, groupable: true, filterable: true, operators: [eq]}
+  - {id: restructure_flag, label: Restructured, kind: attribute, type: boolean, view: v_account_summary, column: restructure_flag, groupable: true, filterable: true, operators: [eq]}
