@@ -1,0 +1,123 @@
+# Tier 2 — Executive Playbook (phase 1). Questions answered at every month-end by bi_investigate.
+# Approved structure 2026-10-19 (P1-P8). RAG thresholds are PLACEHOLDERS (P4): business must set real values.
+#
+# analyses: change | segments | mix_rate | num_den | bridge_par90 | bridge_npa | roll_rates | concentration |
+#           unusual | deterioration | concentration_shares | summary
+# rag: {metric, worse: higher|lower, amber, red}  (value at the as-of month-end; ratios as fractions)
+
+version: 1
+segment_dimensions: [state_name, branch_code, product_code, loan_group, ticket_size]
+materiality: {min_share: 0.10, max_per_dimension: 5}
+
+tiles:
+  - {kpi: total_outstanding, label: Loan book}
+  - {kpi: gross_npa_ratio, label: Gross NPA, rag: {worse: higher, amber: 0.03, red: 0.05}}
+  - {kpi: par_90_plus_ratio, label: PAR 90+, rag: {worse: higher, amber: 0.02, red: 0.04}}
+  - {kpi: collection_efficiency, label: Collection efficiency (month), rag: {worse: lower, amber: 0.95, red: 0.90}}
+
+questions:
+
+  - id: q1_book
+    theme: Growth
+    question: How big is the loan book and how did it move?
+    kpi: total_outstanding
+    comparisons: [mom, qoq, yoy]
+    analyses: [change, segments, unusual]
+    caveats: ["Outstanding is a month-end balance; months are compared, never added."]
+    drilldowns: [{metric: total_outstanding, dimensions: [month]}, {metric: active_account_count, dimensions: [loan_group]}]
+    owner: Finance
+
+  - id: q2_growth_sources
+    theme: Growth
+    question: Where is growth coming from?
+    kpi: total_outstanding
+    comparisons: [yoy, mom]
+    analyses: [change, segments]
+    caveats: ["Segment shares sum to the total change; negative shares are segments that shrank."]
+    drilldowns: [{metric: total_outstanding, dimensions: [state_name]}, {metric: total_outstanding, dimensions: [ticket_size]}]
+    owner: Finance
+
+  - id: q3_disbursement
+    theme: Growth
+    question: What is the disbursement run-rate this fiscal year?
+    kpi: disbursement_amount
+    comparisons: [fytd, mom, yoy]
+    analyses: [change, segments, unusual]
+    caveats: ["No disbursement plan or budget is available, so this is compared with last year, not with plan."]
+    drilldowns: [{metric: disbursement_amount, dimensions: [month]}, {metric: disbursement_amount, dimensions: [loan_group]}]
+    owner: Business
+
+  - id: q4_gnpa
+    theme: Asset quality
+    question: What is the gross NPA ratio and what drove it?
+    kpi: gross_npa_ratio
+    comparisons: [mom, qoq, yoy]
+    analyses: [change, num_den, bridge_npa, segments, mix_rate, concentration, unusual]
+    concentration_metric: npa_outstanding
+    rag: {worse: higher, amber: 0.03, red: 0.05}
+    caveats: ["NPA status is the lender's flag; reasons for slippage (borrower, economic) are not in the data.",
+              "Write-offs and closures reduce NPA mechanically."]
+    drilldowns: [{metric: gross_npa_ratio, dimensions: [branch_code]}, {metric: npa_outstanding, dimensions: [loan_group]}]
+    owner: Credit risk
+
+  - id: q5_par90
+    theme: Asset quality
+    question: What drove the change in PAR 90+?
+    kpi: par_90_plus_ratio
+    comparisons: [mom, qoq, yoy]
+    analyses: [change, num_den, bridge_par90, segments, mix_rate, concentration, unusual]
+    concentration_metric: par_90_plus_amount
+    rag: {worse: higher, amber: 0.02, red: 0.04}
+    caveats: ["Write-offs reduce PAR 90+ mechanically.", "Cannot attribute to borrower circumstances or macro factors."]
+    drilldowns: [{metric: par_90_plus_amount, dimensions: [branch_code]}, {metric: par_90_plus_amount, dimensions: [loan_group]}]
+    owner: Credit risk
+
+  - id: q6_roll_rates
+    theme: Early warning
+    question: Are accounts slipping into later buckets faster?
+    kpi: par_30_plus_ratio
+    comparisons: [mom]
+    analyses: [roll_rates]
+    caveats: ["Roll rates are month-on-month account transitions; small buckets make rates volatile."]
+    drilldowns: [{metric: account_count, dimensions: [par_bucket]}]
+    owner: Credit risk
+
+  - id: q7_deterioration
+    theme: Early warning
+    question: Which branches and states are deteriorating fastest?
+    kpi: par_30_plus_ratio
+    comparisons: [mom, qoq]
+    analyses: [deterioration]
+    deterioration_kpis: [par_30_plus_ratio, gross_npa_ratio]
+    deterioration_dimensions: [state_name, branch_code]
+    caveats: ["Ranks segments by the change in their own ratio; small segments can move sharply."]
+    drilldowns: [{metric: par_30_plus_ratio, dimensions: [branch_code]}]
+    owner: Credit risk
+
+  - id: q8_collections
+    theme: Collections
+    question: What is collection efficiency and where did it drop?
+    kpi: collection_efficiency
+    comparisons: [mom, yoy]
+    analyses: [change, num_den, segments, mix_rate, unusual]
+    rag: {worse: lower, amber: 0.95, red: 0.90}
+    caveats: ["Measures collection against demand raised in the same month; overdue recoveries are not included."]
+    drilldowns: [{metric: collection_efficiency, dimensions: [loan_group]}, {metric: collection_efficiency, dimensions: [month]}]
+    owner: Collections
+
+  - id: q9_concentration
+    theme: Concentration
+    question: How concentrated is our risk?
+    kpi: npa_outstanding
+    comparisons: [mom]
+    analyses: [concentration_shares, concentration]
+    concentration_metric: npa_outstanding
+    caveats: ["Concentration is shown by segment and by number of accounts; no individual accounts are identified."]
+    drilldowns: [{metric: npa_outstanding, dimensions: [state_name]}, {metric: npa_outstanding, dimensions: [ticket_size]}]
+    owner: Credit risk
+
+  - id: q10_summary
+    theme: Summary
+    question: What should leadership look at this month?
+    analyses: [summary]
+    owner: Finance

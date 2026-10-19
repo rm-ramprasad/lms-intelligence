@@ -7,7 +7,8 @@ st.set_page_config(page_title="Portfolio Q&A", page_icon=":material/query_stats:
 init_state()
 
 pages = [
-    st.Page("app_pages/ask.py", title="Ask", icon=":material/chat:", default=True),
+    st.Page("app_pages/briefing.py", title="Executive briefing", icon=":material/dashboard:", default=True),
+    st.Page("app_pages/ask.py", title="Ask", icon=":material/chat:"),
     st.Page("app_pages/catalog.py", title="KPI catalog", icon=":material/menu_book:"),
     st.Page("app_pages/builder.py", title="Guided builder", icon=":material/tune:"),
 ]

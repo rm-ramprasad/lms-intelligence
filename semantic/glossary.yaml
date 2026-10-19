@@ -139,6 +139,29 @@ kpis:
     owner: Credit risk
     status: approved
 
+  - metric_id: par_90_plus_amount
+    name: PAR 90+ outstanding
+    short: Outstanding of accounts more than 90 days past due.
+    long: Sum of PAR 90+ outstanding (accounts in the 90+ DPD bucket) at a month-end snapshot.
+    formula: "Σ PAR 90+ outstanding"
+    synonyms: [par 90 amount, par90 amount, par 90+ amount, par90+ amount, par 90 outstanding, par 90+ outstanding,
+               90+ outstanding, 90 plus outstanding]
+    behavior_note: Month-end balance. Compare months; never add across months.
+    related: [par_90_plus_ratio, par_30_plus_amount, npa_outstanding]
+    owner: Credit risk
+    status: approved
+
+  - metric_id: par_90_plus_ratio
+    name: PAR 90+ ratio
+    short: Share of the book more than 90 days past due.
+    long: PAR 90+ outstanding divided by total outstanding at a month-end snapshot.
+    formula: "PAR 90+ outstanding ÷ Total outstanding"
+    synonyms: [par 90 ratio, par90 ratio, par 90+ ratio, par90+ ratio, par 90 %, par 90+ %, par90 %, par 90 percentage]
+    behavior_note: Month-end ratio. Computed from totals, never averaged.
+    related: [par_90_plus_amount, par_30_plus_ratio, gross_npa_ratio]
+    owner: Credit risk
+    status: approved
+
   - metric_id: npa_outstanding
     name: NPA outstanding
     short: Outstanding of non-performing accounts.
@@ -179,6 +202,10 @@ ambiguous:
   par 30: [par_30_plus_ratio, par_30_plus_amount]
   par30: [par_30_plus_ratio, par_30_plus_amount]
   par 30+: [par_30_plus_ratio, par_30_plus_amount]
+  par 90: [par_90_plus_ratio, par_90_plus_amount]
+  par90: [par_90_plus_ratio, par_90_plus_amount]
+  par 90+: [par_90_plus_ratio, par_90_plus_amount]
+  par90+: [par_90_plus_ratio, par_90_plus_amount]
   collection: [repayment_amount, collection_efficiency]
 
 dimensions:

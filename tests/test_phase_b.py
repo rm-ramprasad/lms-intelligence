@@ -17,6 +17,15 @@ def test_total_uses_grouping_sets_and_sorts_total_first(compile_only):
     assert cq.fetch_limit == 7
 
 
+def test_total_over_time_grain_uses_column_reference(compile_only):
+    """Athena rejects expressions inside GROUPING SETS: the month grain must be a derived column."""
+    _, cq = compile_only({"metric": "disbursement_amount", "dimensions": ["month"], "include_total": True,
+                          "period": {"kind": "fiscal_year", "year": 2026}})
+    assert "FROM (SELECT *, date_trunc('month', \"transaction_date\") AS \"_g0\" FROM analytics_poc.v_account_summary) AS src" in cq.sql
+    assert 'GROUP BY GROUPING SETS (("_g0"), ())' in cq.sql
+    assert "date_trunc" not in cq.sql.split("GROUP BY")[1]
+
+
 def test_total_ignored_without_dimensions(compile_only):
     vq, cq = compile_only({"metric": "total_outstanding", "include_total": True})
     assert not vq.include_total and "GROUPING SETS" not in cq.sql

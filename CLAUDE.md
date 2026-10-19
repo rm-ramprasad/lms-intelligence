@@ -37,6 +37,16 @@
 - **Live calls:** `scripts/benchmark_interpreters.py --modes ai|hybrid` and the app's AI mode call Bedrock. Run the
   benchmark only with approval.
 
+## Tier 2: Executive Playbook (`bi_investigate/`)
+- **Questions:** `semantic/executive_playbook.yaml` (validated against approved metrics and dimensions).
+  New questions or KPIs need business approval. RAG thresholds are placeholders until the business sets them.
+- **Analyses:** deterministic and exact. Every decomposition must reconcile to its total, otherwise it's withheld.
+  SQL comes only from `sql_templates.py` (governed, passes `assert_safe_sql`).
+- **Privacy:** account-level joins happen inside Athena only. Snapshots, logs and prompts never contain account or
+  customer identifiers; concentration is reported as counts.
+- **Snapshots:** `briefings/<date>/briefing.json` (git-ignored). Executives see APPROVED briefings only;
+  approved briefings are immutable. `scripts/run_briefing.py` runs live Athena queries, so it needs approval.
+
 ## Hard rules
 - **Data access:** never read, download or print customer records or row-level data. The only approved data access is `scripts/profile_s3.py`: it runs in memory, skips PII columns, and outputs aggregates only. Validation output must stay aggregate-only.
 - **Column quality:** columns tagged `quality: placeholder|all_zero|constant` must not be used in metrics or as dimensions.

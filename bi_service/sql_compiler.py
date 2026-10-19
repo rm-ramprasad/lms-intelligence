@@ -101,6 +101,20 @@ def _aggregate(metric: Metric) -> str:
     return f"SUM({expr})" if m.aggregation == "sum" else f"COUNT(DISTINCT {expr})"
 
 
+def aggregate_sql(metric: Metric) -> str:
+    """Public: the governed aggregate expression for a non-ratio metric (used by the Tier 2 templates)."""
+    return _aggregate(metric)
+
+
+def row_value_sql(metric: Metric) -> str:
+    """Public: per-row value whose SUM equals the metric (sum metrics only), e.g. for account-level deltas."""
+    m = metric.measure
+    if m.aggregation != "sum":
+        raise UnsafeSQLError(f"row value only defined for sum metrics, not {m.aggregation}")
+    expr = " + ".join(f"COALESCE({ident(c)}, 0)" for c in m.columns)
+    return f"CASE WHEN {_condition_sql(m.condition)} THEN {expr} ELSE 0 END" if m.condition else expr
+
+
 def _filter_sql(f: ResolvedFilter) -> str:
     col = ident(f.dimension.column)
     if f.op in ("eq", "ne"):
@@ -123,12 +137,22 @@ def compile_query(q: ValidatedQuery, model: SemanticModel) -> CompiledQuery:
     relation = view.qualified
     date_col = ident(view.snapshot_date_column)
 
+    # Athena requires GROUPING SETS members to be column references, so with a total row any time-grain
+    # expression is first computed as a column ("_g<i>") in a subquery over the view.
+    derived = {}
+    if q.include_total:
+        derived = {d.id: f"\"_g{i}\"" for i, d in enumerate(q.dimensions) if d.kind == "time"}
+    if derived:
+        extra = ", ".join(f"{_dim_expr(d)} AS {derived[d.id]}" for d in q.dimensions if d.id in derived)
+        relation = f"(SELECT *, {extra} FROM {view.qualified}) AS src"
+
     select, group, dim_cols, dim_exprs = [], [], [], []
     for i, d in enumerate(q.dimensions, 1):
-        select.append(f"{_dim_expr(d)} AS {ident(d.id)}")
+        expr = derived.get(d.id, _dim_expr(d))
+        select.append(f"{expr} AS {ident(d.id)}")
         group.append(str(i))
         dim_cols.append(d.id)
-        dim_exprs.append(_dim_expr(d))
+        dim_exprs.append(expr)
 
     if metric.measure.aggregation == "ratio":
         num, den = model.metrics[metric.measure.numerator], model.metrics[metric.measure.denominator]
@@ -158,7 +182,7 @@ def compile_query(q: ValidatedQuery, model: SemanticModel) -> CompiledQuery:
         if metric.behavior == "snapshot" and time_dims:
             bucket = f" GROUP BY {_time_expr(time_dims[0])}"
         cte_where = f" WHERE {' AND '.join(bounds)}" if bounds else ""
-        cte = f"WITH {SNAPSHOT_CTE} AS (\n  SELECT MAX({date_col}) AS d FROM {relation}{cte_where}{bucket}\n)\n"
+        cte = f"WITH {SNAPSHOT_CTE} AS (\n  SELECT MAX({date_col}) AS d FROM {view.qualified}{cte_where}{bucket}\n)\n"
         where.append(f"{date_col} IN (SELECT d FROM {SNAPSHOT_CTE})")
     else:
         where += bounds

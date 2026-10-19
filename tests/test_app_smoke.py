@@ -50,6 +50,7 @@ def app(model, config, tmp_path, monkeypatch):
         fn.clear()
     at = AppTest.from_file(APP, default_timeout=20).run()
     assert not at.exception
+    at.switch_page("app_pages/ask.py").run()
     return at, fake, tmp_path
 
 
@@ -135,6 +136,7 @@ def test_hybrid_ai_path_shows_badge_and_never_sends_pii(model, config, tmp_path,
                runtime._cached_run, runtime.get_bedrock, runtime.get_router, runtime._ai_store):
         fn.clear()
     at = AppTest.from_file(APP, default_timeout=20).run()
+    at.switch_page("app_pages/ask.py").run()
     at.session_state["ai_summary"] = True
     at.chat_input[0].set_value("how bad are the loans per state lol").run()
     assert not at.exception

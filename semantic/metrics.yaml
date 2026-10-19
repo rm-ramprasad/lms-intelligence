@@ -202,6 +202,39 @@ metrics:
       FROM analytics_poc.v_account_summary
       WHERE transaction_date = (SELECT MAX(transaction_date) FROM analytics_poc.v_account_summary)
 
+  - id: par_90_plus_amount
+    name: PAR 90+ outstanding
+    view: v_account_summary
+    measure: {aggregation: sum, columns: [par_over_90]}
+    behavior: snapshot
+    additivity: semi_additive
+    period_required: false
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: currency, unit: INR, decimals: 2}
+    definition: Outstanding of accounts more than 90 days past due (equals TotalOS in the 90+ DPD bucket; verified C2).
+    status: approved   # T1 approved 2026-10-19
+    validation_sql: |
+      SELECT SUM(par_over_90) FROM analytics_poc.v_account_summary
+      WHERE transaction_date = (SELECT MAX(transaction_date) FROM analytics_poc.v_account_summary)
+
+  - id: par_90_plus_ratio
+    name: PAR 90+ ratio
+    view: v_account_summary
+    measure: {aggregation: ratio, numerator: par_90_plus_amount, denominator: total_outstanding}
+    behavior: snapshot
+    additivity: non_additive
+    period_required: false
+    required_filters: []
+    allowed_dimensions: all
+    format: {type: percent, decimals: 2}
+    definition: PAR 90+ outstanding divided by total outstanding at a month-end snapshot.
+    status: approved   # T1 approved 2026-10-19
+    validation_sql: |
+      SELECT CAST(SUM(par_over_90) AS double) / NULLIF(CAST(SUM(total_os) AS double), 0)
+      FROM analytics_poc.v_account_summary
+      WHERE transaction_date = (SELECT MAX(transaction_date) FROM analytics_poc.v_account_summary)
+
   - id: npa_outstanding
     name: NPA outstanding
     view: v_account_summary

@@ -167,7 +167,7 @@ def _cached_run_calls() -> int:
     return getattr(_local, "calls", 0)
 
 
-def handle(question: str, *, example: str | None = None, **force) -> dict:
+def handle(question: str, *, example: str | None = None, spec: dict | None = None, **force) -> dict:
     """Interpret and (if possible) execute one turn. Returns the assistant message dict."""
     anchor = latest_date()
     msg_id = uuid.uuid4().hex[:8]
@@ -179,6 +179,10 @@ def handle(question: str, *, example: str | None = None, **force) -> dict:
         ex = get_service().model.examples[example]
         r = Interpreted(dict(ex.spec), [("example", ex.question)])
         question = ex.question
+    elif spec is not None:   # drill-down from the Executive Briefing: a governed spec, validated like any other
+        spec = dict(spec)
+        notes = get_interpreter()._finalise(spec, anchor)
+        r = Interpreted(spec, [("drilldown", question)], notes=notes)
     else:
         prev = st.session_state.conversation.last_spec
         key = json.dumps([question, prev, anchor.isoformat(), mode, force], sort_keys=True, default=str)
@@ -264,8 +268,10 @@ def process_pending() -> None:
     if action.get("example"):
         question = get_service().model.examples[action["example"]].question
     shown = question if (action.get("example") or "display" not in action) else action["display"]
+    if action.get("spec") is not None:
+        question = action.get("display", "Drill-down")
     st.session_state.messages.append({"id": uuid.uuid4().hex[:8], "role": "user", "text": shown})
-    kw = {k: action[k] for k in ("force_metric", "force_period", "ignore", "example") if k in action}
+    kw = {k: action[k] for k in ("force_metric", "force_period", "ignore", "example", "spec") if k in action}
     st.session_state.messages.append(handle(question, **kw))
 
 
