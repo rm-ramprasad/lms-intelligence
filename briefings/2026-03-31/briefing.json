@@ -1,0 +1,3949 @@
+{
+ "as_of": "2026-03-31",
+ "status": "APPROVED",
+ "approved_by": "Ram Prasad",
+ "approved_at": "2026-10-19T12:29:45+00:00",
+ "generated_at": "2026-10-19T10:50:16+00:00",
+ "playbook_version": "655104430b57",
+ "tiles": [
+  {
+   "kpi": "total_outstanding",
+   "label": "Loan book",
+   "value": 20340981809.89,
+   "delta": 61317312.13999939,
+   "delta_label": "+₹6.13 Cr vs last month",
+   "rag": "none"
+  },
+  {
+   "kpi": "gross_npa_ratio",
+   "label": "Gross NPA",
+   "value": 0.02622137613341115,
+   "delta": -0.013612329965603746,
+   "delta_label": "-1.36 pp vs last month",
+   "rag": "green"
+  },
+  {
+   "kpi": "par_90_plus_ratio",
+   "label": "PAR 90+",
+   "value": 0.02622137613341115,
+   "delta": -0.013612329965603746,
+   "delta_label": "-1.36 pp vs last month",
+   "rag": "amber"
+  },
+  {
+   "kpi": "collection_efficiency",
+   "label": "Collection efficiency (month)",
+   "value": 0.9695108441626945,
+   "delta": 0.00899275816135936,
+   "delta_label": "+0.90 pp vs last month",
+   "rag": "green"
+  }
+ ],
+ "top_findings": [
+  {
+   "question_id": "q4_gnpa",
+   "kind": "bridge",
+   "text": "Closed / exited: −₹20.97 Cr (5 accounts), 76% of the NPA outstanding movement.",
+   "score": 0.7642237265161482,
+   "kpi": "gross_npa_ratio",
+   "dimension": null,
+   "segment": "Closed / exited",
+   "drilldown": null
+  },
+  {
+   "question_id": "q9_concentration",
+   "kind": "concentration",
+   "text": "Tamil Nadu holds 32% of NPA but only 11% of the book.",
+   "score": 0.6319192412413999,
+   "kpi": "npa_outstanding",
+   "dimension": "state_name",
+   "segment": "Tamil Nadu",
+   "drilldown": {
+    "metric": "gross_npa_ratio",
+    "dimensions": [
+     "branch_code"
+    ],
+    "filters": [
+     {
+      "dimension": "state_name",
+      "op": "eq",
+      "value": "Tamil Nadu"
+     }
+    ]
+   }
+  },
+  {
+   "question_id": "q4_gnpa",
+   "kind": "change",
+   "text": "Gross NPA ratio fell 1.36 pp vs last month to 2.62% (largest monthly move in 13 months).",
+   "score": 0.6,
+   "kpi": "gross_npa_ratio",
+   "dimension": null,
+   "segment": null,
+   "drilldown": null
+  },
+  {
+   "question_id": "q4_gnpa",
+   "kind": "contributor",
+   "text": "DEMO-WEST (branch) accounted for 59% of the change in Gross NPA ratio vs last month.",
+   "score": 0.5850243669743462,
+   "kpi": "gross_npa_ratio",
+   "dimension": "branch_code",
+   "segment": "DEMO-WEST",
+   "drilldown": {
+    "metric": "gross_npa_ratio",
+    "dimensions": [
+     "branch_code"
+    ]
+   }
+  },
+  {
+   "question_id": "q2_growth_sources",
+   "kind": "contributor",
+   "text": "Above 2.5 Cr (ticket size) accounted for 95% of the change in Total outstanding vs last year.",
+   "score": 0.4761191744877685,
+   "kpi": "total_outstanding",
+   "dimension": "ticket_size",
+   "segment": "Above 2.5 Cr",
+   "drilldown": {
+    "metric": "total_outstanding",
+    "dimensions": [
+     "ticket_size"
+    ]
+   }
+  }
+ ],
+ "questions": [
+  {
+   "id": "q1_book",
+   "theme": "Growth",
+   "question": "How big is the loan book and how did it move?",
+   "answer": "Total outstanding was ₹2,034.10 Cr at Mar 2026 (+₹6.13 Cr vs last month). +₹113.58 Cr vs previous quarter. +₹170.51 Cr vs last year. Main driver: DEMO-EAST (branch) moved Total outstanding vs last month by more than the whole net change (297%); other segments partly offset it.",
+   "rag": "none",
+   "kpi": "total_outstanding",
+   "comparisons": {
+    "mom": {
+     "value_a": 20279664497.75,
+     "value_b": 20340981809.89,
+     "delta": 61317312.13999939,
+     "delta_pct": 0.00302358612228533,
+     "num_a": 20279664497.75,
+     "num_b": 20340981809.89,
+     "den_a": null,
+     "den_b": null
+    },
+    "qoq": {
+     "value_a": 19205143999.09,
+     "value_b": 20340981809.89,
+     "delta": 1135837810.7999992,
+     "delta_pct": 0.05914237408757877,
+     "num_a": 19205143999.09,
+     "num_b": 20340981809.89,
+     "den_a": null,
+     "den_b": null
+    },
+    "yoy": {
+     "value_a": 18635871991.8,
+     "value_b": 20340981809.89,
+     "delta": 1705109818.0900002,
+     "delta_pct": 0.09149611130835565,
+     "num_a": 18635871991.8,
+     "num_b": 20340981809.89,
+     "den_a": null,
+     "den_b": null
+    }
+   },
+   "comparison_windows": {
+    "mom": {
+     "kind": "mom",
+     "a": {
+      "label": "Feb 2026",
+      "start": "2026-02-01",
+      "end": "2026-02-28"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    },
+    "qoq": {
+     "kind": "qoq",
+     "a": {
+      "label": "Q3 FY26",
+      "start": "2025-10-01",
+      "end": "2025-12-31"
+     },
+     "b": {
+      "label": "Q4 FY26",
+      "start": "2026-01-01",
+      "end": "2026-03-31"
+     }
+    },
+    "yoy": {
+     "kind": "yoy",
+     "a": {
+      "label": "Mar 2025",
+      "start": "2025-03-01",
+      "end": "2025-03-31"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    }
+   },
+   "contributions": {
+    "state_name": [
+     {
+      "dimension": "state_name",
+      "segment": "Karnataka",
+      "value_a": 2668796317.7,
+      "value_b": 2779737868.16,
+      "delta": 110941550.46000004,
+      "share": 1.8093022441476043,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Maharashtra",
+      "value_a": 4308353735.61,
+      "value_b": 4231968398.49,
+      "delta": -76385337.11999989,
+      "share": -1.2457385109379429,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Rajasthan",
+      "value_a": 1593320251.56,
+      "value_b": 1642003656.23,
+      "delta": 48683404.67000008,
+      "share": 0.7939585570686197,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Madhya Pradesh",
+      "value_a": 534732631.15,
+      "value_b": 497911223.63,
+      "delta": -36821407.51999998,
+      "share": -0.6005058968653016,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Delhi",
+      "value_a": 1071420383.11,
+      "value_b": 1035814431.28,
+      "delta": -35605951.83000004,
+      "share": -0.5806835066205235,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Tamil Nadu",
+      "value_a": 2109681130.34,
+      "value_b": 2139935155.19,
+      "delta": 30254024.850000143,
+      "share": 0.4934010280966703,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Uttar Pradesh",
+      "value_a": 2898140716.14,
+      "value_b": 2917182351.31,
+      "delta": 19041635.170000076,
+      "share": 0.31054256139806496,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "West Bengal",
+      "value_a": 801955584.14,
+      "value_b": 790501917.89,
+      "delta": -11453666.25,
+      "share": -0.1867933516695749,
+      "mix": null,
+      "rate": null
+     }
+    ],
+    "branch_code": [
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-EAST",
+      "value_a": 5408069709.44,
+      "value_b": 5590045392.1,
+      "delta": 181975682.6600008,
+      "share": 2.967770052355113,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-NORTH",
+      "value_a": 4560264991.17,
+      "value_b": 4455932207.87,
+      "delta": -104332783.30000019,
+      "share": -1.7015224519592131,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-WEST",
+      "value_a": 5000762548.28,
+      "value_b": 4952258928.52,
+      "delta": -48503619.759999275,
+      "share": -0.7910265154685197,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-SOUTH",
+      "value_a": 5310567248.86,
+      "value_b": 5342745281.4,
+      "delta": 32178032.53999996,
+      "share": 0.5247789150726508,
+      "mix": null,
+      "rate": null
+     }
+    ],
+    "product_code": [
+     {
+      "dimension": "product_code",
+      "segment": "DF-WC",
+      "value_a": 4811869944.12,
+      "value_b": 4870136434.29,
+      "delta": 58266490.17000008,
+      "share": 0.9502453407769458,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-EF",
+      "value_a": 5513657717.13,
+      "value_b": 5474106946.23,
+      "delta": -39550770.90000057,
+      "share": -0.6450180139941302,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-RE",
+      "value_a": 4863788767.95,
+      "value_b": 4897711771.43,
+      "delta": 33923003.480000496,
+      "share": 0.5532369618966281,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-GF",
+      "value_a": 5090348068.55,
+      "value_b": 5099026657.94,
+      "delta": 8678589.38999939,
+      "share": 0.1415357113205562,
+      "mix": null,
+      "rate": null
+     }
+    ],
+    "loan_group": [
+     {
+      "dimension": "loan_group",
+      "segment": "Working Capital Plus",
+      "value_a": 4811869944.12,
+      "value_b": 4870136434.29,
+      "delta": 58266490.17000008,
+      "share": 0.9502453407769458,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Enterprise Flex",
+      "value_a": 5513657717.13,
+      "value_b": 5474106946.23,
+      "delta": -39550770.90000057,
+      "share": -0.6450180139941302,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Rural Enterprise",
+      "value_a": 4863788767.95,
+      "value_b": 4897711771.43,
+      "delta": 33923003.480000496,
+      "share": 0.5532369618966281,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Growth Finance",
+      "value_a": 5090348068.55,
+      "value_b": 5099026657.94,
+      "delta": 8678589.38999939,
+      "share": 0.1415357113205562,
+      "mix": null,
+      "rate": null
+     }
+    ],
+    "ticket_size": [
+     {
+      "dimension": "ticket_size",
+      "segment": "Above 2.5 Cr",
+      "value_a": 11845454142.35,
+      "value_b": 11944128078.38,
+      "delta": 98673936.02999878,
+      "share": 1.6092345307750433,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "ticket_size",
+      "segment": "Up to 1.5 Cr",
+      "value_a": 1832667024.12,
+      "value_b": 1778831442.62,
+      "delta": -53835581.5,
+      "share": -0.8779833887219789,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "ticket_size",
+      "segment": "1.5 - 2.5 Cr",
+      "value_a": 6601543331.28,
+      "value_b": 6618022288.89,
+      "delta": 16478957.61000061,
+      "share": 0.26874885794693565,
+      "mix": null,
+      "rate": null
+     }
+    ]
+   },
+   "mix_rate": null,
+   "num_den": null,
+   "bridge": null,
+   "roll_rates": [],
+   "concentration": null,
+   "unusual": {
+    "z": -0.3178855256471974,
+    "rank_of_13": 12,
+    "series": [
+     [
+      "2024-03-31",
+      16348827359.1
+     ],
+     [
+      "2024-04-30",
+      16145057478.51
+     ],
+     [
+      "2024-05-31",
+      16381627400.53
+     ],
+     [
+      "2024-06-30",
+      16421488799.3
+     ],
+     [
+      "2024-07-31",
+      16583849465.14
+     ],
+     [
+      "2024-08-31",
+      16983428370.28
+     ],
+     [
+      "2024-09-30",
+      17155673277.27
+     ],
+     [
+      "2024-10-31",
+      17514710083.29
+     ],
+     [
+      "2024-11-30",
+      17750631370.86
+     ],
+     [
+      "2024-12-31",
+      18047121581.98
+     ],
+     [
+      "2025-01-31",
+      18445773310.19
+     ],
+     [
+      "2025-02-28",
+      18431430941.5
+     ],
+     [
+      "2025-03-31",
+      18635871991.8
+     ],
+     [
+      "2025-04-30",
+      18534736459.76
+     ],
+     [
+      "2025-05-31",
+      18640192240.11
+     ],
+     [
+      "2025-06-30",
+      18475360360.41
+     ],
+     [
+      "2025-07-31",
+      18570904023.14
+     ],
+     [
+      "2025-08-31",
+      18578405658.97
+     ],
+     [
+      "2025-09-30",
+      19185108155.36
+     ],
+     [
+      "2025-10-31",
+      18780479984.9
+     ],
+     [
+      "2025-11-30",
+      18946504614.03
+     ],
+     [
+      "2025-12-31",
+      19205143999.09
+     ],
+     [
+      "2026-01-31",
+      19774896202.06
+     ],
+     [
+      "2026-02-28",
+      20279664497.75
+     ],
+     [
+      "2026-03-31",
+      20340981809.89
+     ]
+    ]
+   },
+   "extra": {},
+   "findings": [
+    {
+     "question_id": "q1_book",
+     "kind": "change",
+     "text": "Total outstanding rose ₹6.13 Cr vs last month to ₹2,034.10 Cr.",
+     "score": 0.24357710512943948,
+     "kpi": "total_outstanding",
+     "dimension": null,
+     "segment": null,
+     "drilldown": null
+    },
+    {
+     "question_id": "q1_book",
+     "kind": "contributor",
+     "text": "DEMO-EAST (branch) moved Total outstanding vs last month by more than the whole net change (297%); other segments partly offset it.",
+     "score": 0.40596184188239914,
+     "kpi": "total_outstanding",
+     "dimension": "branch_code",
+     "segment": "DEMO-EAST",
+     "drilldown": {
+      "metric": "total_outstanding",
+      "dimensions": [
+       "branch_code"
+      ]
+     }
+    }
+   ],
+   "caveats": [
+    "Outstanding is a month-end balance; months are compared, never added."
+   ],
+   "drilldowns": [
+    {
+     "metric": "total_outstanding",
+     "dimensions": [
+      "month"
+     ]
+    },
+    {
+     "metric": "active_account_count",
+     "dimensions": [
+      "loan_group"
+     ]
+    }
+   ],
+   "unavailable": []
+  },
+  {
+   "id": "q2_growth_sources",
+   "theme": "Growth",
+   "question": "Where is growth coming from?",
+   "answer": "Total outstanding was ₹2,034.10 Cr at Mar 2026 (+₹170.51 Cr vs last year). +₹6.13 Cr vs last month. Main driver: Above 2.5 Cr (ticket size) accounted for 95% of the change in Total outstanding vs last year.",
+   "rag": "none",
+   "kpi": "total_outstanding",
+   "comparisons": {
+    "yoy": {
+     "value_a": 18635871991.8,
+     "value_b": 20340981809.89,
+     "delta": 1705109818.0900002,
+     "delta_pct": 0.09149611130835565,
+     "num_a": 18635871991.8,
+     "num_b": 20340981809.89,
+     "den_a": null,
+     "den_b": null
+    },
+    "mom": {
+     "value_a": 20279664497.75,
+     "value_b": 20340981809.89,
+     "delta": 61317312.13999939,
+     "delta_pct": 0.00302358612228533,
+     "num_a": 20279664497.75,
+     "num_b": 20340981809.89,
+     "den_a": null,
+     "den_b": null
+    }
+   },
+   "comparison_windows": {
+    "yoy": {
+     "kind": "yoy",
+     "a": {
+      "label": "Mar 2025",
+      "start": "2025-03-01",
+      "end": "2025-03-31"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    },
+    "mom": {
+     "kind": "mom",
+     "a": {
+      "label": "Feb 2026",
+      "start": "2026-02-01",
+      "end": "2026-02-28"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    }
+   },
+   "contributions": {
+    "state_name": [
+     {
+      "dimension": "state_name",
+      "segment": "Karnataka",
+      "value_a": 2222663394.19,
+      "value_b": 2779737868.16,
+      "delta": 557074473.9699998,
+      "share": 0.3267088536232896,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Uttar Pradesh",
+      "value_a": 2367999066.09,
+      "value_b": 2917182351.31,
+      "delta": 549183285.2199998,
+      "share": 0.32208088851143574,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Maharashtra",
+      "value_a": 3865546517.47,
+      "value_b": 4231968398.49,
+      "delta": 366421881.02,
+      "share": 0.21489635279354147,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Tamil Nadu",
+      "value_a": 1853344617.74,
+      "value_b": 2139935155.19,
+      "delta": 286590537.45000005,
+      "share": 0.16807746598458273,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "West Bengal",
+      "value_a": 1001002061.89,
+      "value_b": 790501917.89,
+      "delta": -210500144.0,
+      "share": -0.12345254350584547,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Gujarat",
+      "value_a": 2530439613.9,
+      "value_b": 2687174055.66,
+      "delta": 156734441.75999975,
+      "share": 0.09192043825984637,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Madhya Pradesh",
+      "value_a": 621865090.88,
+      "value_b": 497911223.63,
+      "delta": -123953867.25,
+      "share": -0.07269553311753753,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Rajasthan",
+      "value_a": 1555829817.85,
+      "value_b": 1642003656.23,
+      "delta": 86173838.38000011,
+      "share": 0.050538585530243915,
+      "mix": null,
+      "rate": null
+     }
+    ],
+    "branch_code": [
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-SOUTH",
+      "value_a": 4688294876.82,
+      "value_b": 5342745281.4,
+      "delta": 654450404.5799999,
+      "share": 0.38381715807201827,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-EAST",
+      "value_a": 5172131897.81,
+      "value_b": 5590045392.1,
+      "delta": 417913494.28999996,
+      "share": 0.24509476741980815,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-WEST",
+      "value_a": 4568478690.71,
+      "value_b": 4952258928.52,
+      "delta": 383780237.8100004,
+      "share": 0.22507655151496142,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-NORTH",
+      "value_a": 4206966526.46,
+      "value_b": 4455932207.87,
+      "delta": 248965681.40999985,
+      "share": 0.14601152299321216,
+      "mix": null,
+      "rate": null
+     }
+    ],
+    "product_code": [
+     {
+      "dimension": "product_code",
+      "segment": "DF-EF",
+      "value_a": 4640921005.54,
+      "value_b": 5474106946.23,
+      "delta": 833185940.6899996,
+      "share": 0.4886406329085027,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-RE",
+      "value_a": 4375568979.21,
+      "value_b": 4897711771.43,
+      "delta": 522142792.22000027,
+      "share": 0.3062223832626129,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-WC",
+      "value_a": 4510786154.82,
+      "value_b": 4870136434.29,
+      "delta": 359350279.47000027,
+      "share": 0.21074905302728883,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-GF",
+      "value_a": 5108595852.23,
+      "value_b": 5099026657.94,
+      "delta": -9569194.289999962,
+      "share": -0.005612069198404484,
+      "mix": null,
+      "rate": null
+     }
+    ],
+    "loan_group": [
+     {
+      "dimension": "loan_group",
+      "segment": "Enterprise Flex",
+      "value_a": 4640921005.54,
+      "value_b": 5474106946.23,
+      "delta": 833185940.6899996,
+      "share": 0.4886406329085027,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Rural Enterprise",
+      "value_a": 4375568979.21,
+      "value_b": 4897711771.43,
+      "delta": 522142792.22000027,
+      "share": 0.3062223832626129,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Working Capital Plus",
+      "value_a": 4510786154.82,
+      "value_b": 4870136434.29,
+      "delta": 359350279.47000027,
+      "share": 0.21074905302728883,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Growth Finance",
+      "value_a": 5108595852.23,
+      "value_b": 5099026657.94,
+      "delta": -9569194.289999962,
+      "share": -0.005612069198404484,
+      "mix": null,
+      "rate": null
+     }
+    ],
+    "ticket_size": [
+     {
+      "dimension": "ticket_size",
+      "segment": "Above 2.5 Cr",
+      "value_a": 10320457120.38,
+      "value_b": 11944128078.38,
+      "delta": 1623670958.0,
+      "share": 0.952238348975537,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "ticket_size",
+      "segment": "1.5 - 2.5 Cr",
+      "value_a": 6492429829.22,
+      "value_b": 6618022288.89,
+      "delta": 125592459.67000008,
+      "share": 0.07365652249348023,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "ticket_size",
+      "segment": "Up to 1.5 Cr",
+      "value_a": 1822985042.2,
+      "value_b": 1778831442.62,
+      "delta": -44153599.58000016,
+      "share": -0.02589487146901738,
+      "mix": null,
+      "rate": null
+     }
+    ]
+   },
+   "mix_rate": null,
+   "num_den": null,
+   "bridge": null,
+   "roll_rates": [],
+   "concentration": null,
+   "unusual": null,
+   "extra": {},
+   "findings": [
+    {
+     "question_id": "q2_growth_sources",
+     "kind": "change",
+     "text": "Total outstanding rose ₹170.51 Cr vs last year to ₹2,034.10 Cr.",
+     "score": 0.3,
+     "kpi": "total_outstanding",
+     "dimension": null,
+     "segment": null,
+     "drilldown": null
+    },
+    {
+     "question_id": "q2_growth_sources",
+     "kind": "contributor",
+     "text": "Above 2.5 Cr (ticket size) accounted for 95% of the change in Total outstanding vs last year.",
+     "score": 0.4761191744877685,
+     "kpi": "total_outstanding",
+     "dimension": "ticket_size",
+     "segment": "Above 2.5 Cr",
+     "drilldown": {
+      "metric": "total_outstanding",
+      "dimensions": [
+       "ticket_size"
+      ]
+     }
+    }
+   ],
+   "caveats": [
+    "Segment shares sum to the total change; negative shares are segments that shrank."
+   ],
+   "drilldowns": [
+    {
+     "metric": "total_outstanding",
+     "dimensions": [
+      "state_name"
+     ]
+    },
+    {
+     "metric": "total_outstanding",
+     "dimensions": [
+      "ticket_size"
+     ]
+    }
+   ],
+   "unavailable": []
+  },
+  {
+   "id": "q3_disbursement",
+   "theme": "Growth",
+   "question": "What is the disbursement run-rate this fiscal year?",
+   "answer": "Disbursement amount was ₹522.39 Cr at FY26 YTD (−₹402.90 Cr vs last year to date). +₹0.00 L vs last month. −₹78.39 Cr vs last year. Main driver: Above 2.5 Cr (ticket size) accounted for 59% of the change in Disbursement amount vs last year to date.",
+   "rag": "none",
+   "kpi": "disbursement_amount",
+   "comparisons": {
+    "fytd": {
+     "value_a": 9252909938.31,
+     "value_b": 5223883032.81,
+     "delta": -4029026905.499999,
+     "delta_pct": -0.4354334941506933,
+     "num_a": 9252909938.31,
+     "num_b": 5223883032.81,
+     "den_a": null,
+     "den_b": null
+    },
+    "mom": {
+     "value_a": 0.0,
+     "value_b": 0.0,
+     "delta": 0.0,
+     "delta_pct": null,
+     "num_a": 0.0,
+     "num_b": 0.0,
+     "den_a": null,
+     "den_b": null
+    },
+    "yoy": {
+     "value_a": 783872387.09,
+     "value_b": 0.0,
+     "delta": -783872387.09,
+     "delta_pct": -1.0,
+     "num_a": 783872387.09,
+     "num_b": 0.0,
+     "den_a": null,
+     "den_b": null
+    }
+   },
+   "comparison_windows": {
+    "fytd": {
+     "kind": "fytd",
+     "a": {
+      "label": "FY25 YTD",
+      "start": "2024-04-01",
+      "end": "2025-03-31"
+     },
+     "b": {
+      "label": "FY26 YTD",
+      "start": "2025-04-01",
+      "end": "2026-03-31"
+     }
+    },
+    "mom": {
+     "kind": "mom",
+     "a": {
+      "label": "Feb 2026",
+      "start": "2026-02-01",
+      "end": "2026-02-28"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    },
+    "yoy": {
+     "kind": "yoy",
+     "a": {
+      "label": "Mar 2025",
+      "start": "2025-03-01",
+      "end": "2025-03-31"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    }
+   },
+   "contributions": {
+    "state_name": [
+     {
+      "dimension": "state_name",
+      "segment": "Gujarat",
+      "value_a": 1381798312.75,
+      "value_b": 720120940.63,
+      "delta": -661677372.12,
+      "share": 0.16422758835805948,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Maharashtra",
+      "value_a": 1793052815.0,
+      "value_b": 1169032686.23,
+      "delta": -624020128.77,
+      "share": 0.1548811024116404,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Karnataka",
+      "value_a": 1291343576.91,
+      "value_b": 742975272.63,
+      "delta": -548368304.2800001,
+      "share": 0.1361044036542486,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Telangana",
+      "value_a": 848675105.71,
+      "value_b": 410986758.07,
+      "delta": -437688347.64000005,
+      "share": 0.10863376142822835,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Uttar Pradesh",
+      "value_a": 1175068682.96,
+      "value_b": 773268543.72,
+      "delta": -401800139.24,
+      "share": 0.0997263479902567,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Rajasthan",
+      "value_a": 766911000.01,
+      "value_b": 388533585.83,
+      "delta": -378377414.18,
+      "share": 0.09391285366287314,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Delhi",
+      "value_a": 583839140.96,
+      "value_b": 213578234.59,
+      "delta": -370260906.37,
+      "share": 0.09189834544528834,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Tamil Nadu",
+      "value_a": 773728841.08,
+      "value_b": 556275944.44,
+      "delta": -217452896.64,
+      "share": 0.05397156726433284,
+      "mix": null,
+      "rate": null
+     }
+    ],
+    "branch_code": [
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-EAST",
+      "value_a": 2725166315.33,
+      "value_b": 1074543327.69,
+      "delta": -1650622987.6399999,
+      "share": 0.40968279099520155,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-SOUTH",
+      "value_a": 2358840969.95,
+      "value_b": 1500657434.94,
+      "delta": -858183535.0099998,
+      "share": 0.21300019958628194,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-NORTH",
+      "value_a": 1993360877.5,
+      "value_b": 1138849099.02,
+      "delta": -854511778.48,
+      "share": 0.21208887369640333,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-WEST",
+      "value_a": 2175541775.53,
+      "value_b": 1509833171.16,
+      "delta": -665708604.3700001,
+      "share": 0.16522813572211334,
+      "mix": null,
+      "rate": null
+     }
+    ],
+    "product_code": [
+     {
+      "dimension": "product_code",
+      "segment": "DF-GF",
+      "value_a": 2871255260.65,
+      "value_b": 1029108769.11,
+      "delta": -1842146491.54,
+      "share": 0.45721871179993795,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-WC",
+      "value_a": 2265321571.78,
+      "value_b": 1097222878.59,
+      "delta": -1168098693.1900003,
+      "share": 0.28992079740034404,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-EF",
+      "value_a": 2401418635.07,
+      "value_b": 1593007542.4,
+      "delta": -808411092.6700001,
+      "share": 0.20064673471563152,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-RE",
+      "value_a": 1714914470.81,
+      "value_b": 1504543842.71,
+      "delta": -210370628.0999999,
+      "share": 0.05221375608408678,
+      "mix": null,
+      "rate": null
+     }
+    ],
+    "loan_group": [
+     {
+      "dimension": "loan_group",
+      "segment": "Growth Finance",
+      "value_a": 2871255260.65,
+      "value_b": 1029108769.11,
+      "delta": -1842146491.54,
+      "share": 0.45721871179993795,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Working Capital Plus",
+      "value_a": 2265321571.78,
+      "value_b": 1097222878.59,
+      "delta": -1168098693.1900003,
+      "share": 0.28992079740034404,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Enterprise Flex",
+      "value_a": 2401418635.07,
+      "value_b": 1593007542.4,
+      "delta": -808411092.6700001,
+      "share": 0.20064673471563152,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Rural Enterprise",
+      "value_a": 1714914470.81,
+      "value_b": 1504543842.71,
+      "delta": -210370628.0999999,
+      "share": 0.05221375608408678,
+      "mix": null,
+      "rate": null
+     }
+    ],
+    "ticket_size": [
+     {
+      "dimension": "ticket_size",
+      "segment": "Above 2.5 Cr",
+      "value_a": 5301191161.19,
+      "value_b": 2918564006.01,
+      "delta": -2382627155.1799994,
+      "share": 0.5913654118138278,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "ticket_size",
+      "segment": "1.5 - 2.5 Cr",
+      "value_a": 2932268638.16,
+      "value_b": 1877319434.33,
+      "delta": -1054949203.8299999,
+      "share": 0.2618372198979102,
+      "mix": null,
+      "rate": null
+     },
+     {
+      "dimension": "ticket_size",
+      "segment": "Up to 1.5 Cr",
+      "value_a": 1019450138.96,
+      "value_b": 427999592.47,
+      "delta": -591450546.49,
+      "share": 0.146797368288262,
+      "mix": null,
+      "rate": null
+     }
+    ]
+   },
+   "mix_rate": null,
+   "num_den": null,
+   "bridge": null,
+   "roll_rates": [],
+   "concentration": null,
+   "unusual": {
+    "z": 0.23652258829486006,
+    "rank_of_13": 13,
+    "series": [
+     [
+      "2024-03-31",
+      652321354.5
+     ],
+     [
+      "2024-04-30",
+      571039269.55
+     ],
+     [
+      "2024-05-31",
+      878360093.35
+     ],
+     [
+      "2024-06-30",
+      781215841.94
+     ],
+     [
+      "2024-07-31",
+      925078656.57
+     ],
+     [
+      "2024-08-31",
+      592561265.42
+     ],
+     [
+      "2024-09-30",
+      850531918.17
+     ],
+     [
+      "2024-10-31",
+      918455793.72
+     ],
+     [
+      "2024-11-30",
+      523796877.68
+     ],
+     [
+      "2024-12-31",
+      530527112.04
+     ],
+     [
+      "2025-01-31",
+      1061041170.83
+     ],
+     [
+      "2025-02-28",
+      836429551.95
+     ],
+     [
+      "2025-03-31",
+      783872387.09
+     ],
+     [
+      "2025-04-30",
+      835710884.61
+     ],
+     [
+      "2025-05-31",
+      676308725.76
+     ],
+     [
+      "2025-06-30",
+      571708842.04
+     ],
+     [
+      "2025-07-31",
+      808314474.13
+     ],
+     [
+      "2025-08-31",
+      955723168.01
+     ],
+     [
+      "2025-09-30",
+      1091001539.18
+     ],
+     [
+      "2025-10-31",
+      118837407.3
+     ],
+     [
+      "2025-11-30",
+      30374858.89
+     ],
+     [
+      "2025-12-31",
+      98312920.24
+     ],
+     [
+      "2026-01-31",
+      37590212.65
+     ],
+     [
+      "2026-02-28",
+      0.0
+     ],
+     [
+      "2026-03-31",
+      0.0
+     ]
+    ]
+   },
+   "extra": {},
+   "findings": [
+    {
+     "question_id": "q3_disbursement",
+     "kind": "change",
+     "text": "Disbursement amount fell ₹402.90 Cr vs last year to date to ₹522.39 Cr.",
+     "score": 0.22730451765897197,
+     "kpi": "disbursement_amount",
+     "dimension": null,
+     "segment": null,
+     "drilldown": null
+    },
+    {
+     "question_id": "q3_disbursement",
+     "kind": "contributor",
+     "text": "Above 2.5 Cr (ticket size) accounted for 59% of the change in Disbursement amount vs last year to date.",
+     "score": 0.22403338282090246,
+     "kpi": "disbursement_amount",
+     "dimension": "ticket_size",
+     "segment": "Above 2.5 Cr",
+     "drilldown": {
+      "metric": "disbursement_amount",
+      "dimensions": [
+       "ticket_size"
+      ]
+     }
+    }
+   ],
+   "caveats": [
+    "No disbursement plan or budget is available, so this is compared with last year, not with plan."
+   ],
+   "drilldowns": [
+    {
+     "metric": "disbursement_amount",
+     "dimensions": [
+      "month"
+     ]
+    },
+    {
+     "metric": "disbursement_amount",
+     "dimensions": [
+      "loan_group"
+     ]
+    }
+   ],
+   "unavailable": []
+  },
+  {
+   "id": "q4_gnpa",
+   "theme": "Asset quality",
+   "question": "What is the gross NPA ratio and what drove it?",
+   "answer": "Gross NPA ratio was 2.62% at Mar 2026 (-1.36 pp vs last month). -2.51 pp vs previous quarter. -3.51 pp vs last year. Main driver: Closed / exited: −₹20.97 Cr (5 accounts), 76% of the NPA outstanding movement.",
+   "rag": "green",
+   "kpi": "gross_npa_ratio",
+   "comparisons": {
+    "mom": {
+     "value_a": 0.0398337060990149,
+     "value_b": 0.02622137613341115,
+     "delta": -0.013612329965603746,
+     "delta_pct": -0.3417289350824523,
+     "num_a": 807814195.39,
+     "num_b": 533368534.96,
+     "den_a": 20279664497.75,
+     "den_b": 20340981809.89
+    },
+    "qoq": {
+     "value_a": 0.05134866743809509,
+     "value_b": 0.02622137613341115,
+     "delta": -0.025127291304683937,
+     "delta_pct": -0.48934651196113105,
+     "num_a": 986158552.31,
+     "num_b": 533368534.96,
+     "den_a": 19205143999.09,
+     "den_b": 20340981809.89
+    },
+    "yoy": {
+     "value_a": 0.06137105674761249,
+     "value_b": 0.02622137613341115,
+     "delta": -0.035149680614201345,
+     "delta_pct": -0.5727403515105476,
+     "num_a": 1143703157.55,
+     "num_b": 533368534.96,
+     "den_a": 18635871991.8,
+     "den_b": 20340981809.89
+    }
+   },
+   "comparison_windows": {
+    "mom": {
+     "kind": "mom",
+     "a": {
+      "label": "Feb 2026",
+      "start": "2026-02-01",
+      "end": "2026-02-28"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    },
+    "qoq": {
+     "kind": "qoq",
+     "a": {
+      "label": "Q3 FY26",
+      "start": "2025-10-01",
+      "end": "2025-12-31"
+     },
+     "b": {
+      "label": "Q4 FY26",
+      "start": "2026-01-01",
+      "end": "2026-03-31"
+     }
+    },
+    "yoy": {
+     "kind": "yoy",
+     "a": {
+      "label": "Mar 2025",
+      "start": "2025-03-01",
+      "end": "2025-03-31"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    }
+   },
+   "contributions": {
+    "state_name": [
+     {
+      "dimension": "state_name",
+      "segment": "Maharashtra",
+      "value_a": 0.041446337863136895,
+      "value_b": 0.017535329568263872,
+      "delta": -0.005156901130506543,
+      "share": 0.378840444180918,
+      "mix": -0.00012963164272958123,
+      "rate": -0.005027269487776962
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Gujarat",
+      "value_a": 0.03510108118498871,
+      "value_b": 0.017273584162600678,
+      "delta": -0.0023591752071340606,
+      "share": 0.17331163827906992,
+      "mix": -3.020477751878608e-6,
+      "rate": -0.002356154729382182
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Telangana",
+      "value_a": 0.028496014257215593,
+      "value_b": 0.0,
+      "delta": -0.0022648959357831596,
+      "share": 0.1663856181495895,
+      "mix": 1.4206411176436014e-6,
+      "rate": -0.002266316576900803
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Karnataka",
+      "value_a": 0.06569205747072214,
+      "value_b": 0.049435286393015525,
+      "delta": -0.001889371667563677,
+      "share": 0.13879855045666886,
+      "mix": 0.0002911217603784301,
+      "rate": -0.002180493427942107
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Uttar Pradesh",
+      "value_a": 0.039286047629062036,
+      "value_b": 0.030657786627510036,
+      "delta": -0.001217561437166407,
+      "share": 0.08944548363454286,
+      "mix": 0.000017672270824610143,
+      "rate": -0.0012352337079910172
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Tamil Nadu",
+      "value_a": 0.08707209980135505,
+      "value_b": 0.07872231899243823,
+      "delta": -0.0007762223034824769,
+      "share": 0.05702347103279679,
+      "mix": 0.00009730057859234163,
+      "rate": -0.0008735228820748185
+     },
+     {
+      "dimension": "state_name",
+      "segment": "West Bengal",
+      "value_a": 0.02035937456250655,
+      "value_b": 0.022049658787071356,
+      "delta": 0.00005179771603258073,
+      "share": -0.0038052057335860616,
+      "mix": -0.000014467629208585868,
+      "rate": 0.00006626534524116659
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Delhi",
+      "value_a": 0.0,
+      "value_b": 0.0,
+      "delta": 0.0,
+      "share": -0.0,
+      "mix": -0.0,
+      "rate": 0.0
+     }
+    ],
+    "branch_code": [
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-WEST",
+      "value_a": 0.07117459465705292,
+      "value_b": 0.03937942432632082,
+      "delta": -0.007963544721173256,
+      "share": 0.5850243669743462,
+      "mix": -0.00017289905300443863,
+      "rate": -0.007790645668168817
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-NORTH",
+      "value_a": 0.06891061267897385,
+      "value_b": 0.05182520973324854,
+      "delta": -0.004142926727703586,
+      "share": 0.30435103602190966,
+      "mix": -0.00035055959398564324,
+      "rate": -0.0037923671337179426
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-SOUTH",
+      "value_a": 0.020341092692722957,
+      "value_b": 0.014188908994765988,
+      "delta": -0.0015998062651886708,
+      "share": 0.117526262530451,
+      "mix": 0.000013683232102029375,
+      "rate": -0.0016134894972907002
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-EAST",
+      "value_a": 0.00547580827375586,
+      "value_b": 0.005655424815454603,
+      "delta": 0.00009394774846176758,
+      "share": -0.006901665526706965,
+      "mix": 0.00004531734149253507,
+      "rate": 0.00004863040696923251
+     }
+    ],
+    "product_code": [
+     {
+      "dimension": "product_code",
+      "segment": "DF-RE",
+      "value_a": 0.052062642608702026,
+      "value_b": 0.030444996134687534,
+      "delta": -0.005155922117582019,
+      "share": 0.3787685231411696,
+      "mix": 0.00003897409296272979,
+      "rate": -0.005194896210544749
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-GF",
+      "value_a": 0.04749280580313333,
+      "value_b": 0.031242667541644096,
+      "delta": -0.004089216794213541,
+      "share": 0.30040535342196084,
+      "mix": -0.000012991338374355546,
+      "rate": -0.004076225455839185
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-EF",
+      "value_a": 0.0379138581763129,
+      "value_b": 0.026718314601202314,
+      "delta": -0.0031177053502667706,
+      "share": 0.229035393510496,
+      "mix": -0.00008932057630823706,
+      "rate": -0.0030283847739585334
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-WC",
+      "value_a": 0.021570314916103138,
+      "value_b": 0.01615798938320137,
+      "delta": -0.0012494857035414105,
+      "share": 0.0917907299263732,
+      "mix": 0.000040543344828318787,
+      "rate": -0.0012900290483697293
+     }
+    ],
+    "loan_group": [
+     {
+      "dimension": "loan_group",
+      "segment": "Rural Enterprise",
+      "value_a": 0.052062642608702026,
+      "value_b": 0.030444996134687534,
+      "delta": -0.005155922117582019,
+      "share": 0.3787685231411696,
+      "mix": 0.00003897409296272979,
+      "rate": -0.005194896210544749
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Growth Finance",
+      "value_a": 0.04749280580313333,
+      "value_b": 0.031242667541644096,
+      "delta": -0.004089216794213541,
+      "share": 0.30040535342196084,
+      "mix": -0.000012991338374355546,
+      "rate": -0.004076225455839185
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Enterprise Flex",
+      "value_a": 0.0379138581763129,
+      "value_b": 0.026718314601202314,
+      "delta": -0.0031177053502667706,
+      "share": 0.229035393510496,
+      "mix": -0.00008932057630823706,
+      "rate": -0.0030283847739585334
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Working Capital Plus",
+      "value_a": 0.021570314916103138,
+      "value_b": 0.01615798938320137,
+      "delta": -0.0012494857035414105,
+      "share": 0.0917907299263732,
+      "mix": 0.000040543344828318787,
+      "rate": -0.0012900290483697293
+     }
+    ],
+    "ticket_size": [
+     {
+      "dimension": "ticket_size",
+      "segment": "Above 2.5 Cr",
+      "value_a": 0.03528498824673009,
+      "value_b": 0.02228705443571441,
+      "delta": -0.007523286599179914,
+      "share": 0.5526817685282458,
+      "mix": 0.00008895524707956524,
+      "rate": -0.007612241846259479
+     },
+     {
+      "dimension": "ticket_size",
+      "segment": "Up to 1.5 Cr",
+      "value_a": 0.06101121379301833,
+      "value_b": 0.027571122150710167,
+      "delta": -0.0031024528795812376,
+      "share": 0.2279149041656099,
+      "mix": -0.00012928914665591903,
+      "rate": -0.0029731637329253185
+     },
+     {
+      "dimension": "ticket_size",
+      "segment": "1.5 - 2.5 Cr",
+      "value_a": 0.04211655239201328,
+      "value_b": 0.03295920046479395,
+      "delta": -0.002986590486842594,
+      "share": 0.21940332730614426,
+      "mix": -6.4246410551836594e-6,
+      "rate": -0.00298016584578741
+     }
+    ]
+   },
+   "mix_rate": {
+    "state_name": {
+     "mix": 0.0002603955012229798,
+     "rate": -0.013872725466826724
+    },
+    "branch_code": {
+     "mix": -0.0004644580733955174,
+     "rate": -0.013147871892208228
+    },
+    "product_code": {
+     "mix": -0.000022794476891544028,
+     "rate": -0.013589535488712197
+    },
+    "loan_group": {
+     "mix": -0.000022794476891544028,
+     "rate": -0.013589535488712197
+    },
+    "ticket_size": {
+     "mix": -0.00004675854063153745,
+     "rate": -0.013565571424972207
+    }
+   },
+   "num_den": {
+    "numerator": -0.013512649883077852,
+    "denominator": -0.00009968008252589193,
+    "total": -0.013612329965603746
+   },
+   "bridge": {
+    "kind": "npa",
+    "opening": 807814195.39,
+    "closing": 533368534.96,
+    "steps": [
+     {
+      "label": "Balance change (stayed NPA)",
+      "amount": 32530138.159999967,
+      "accounts": 12
+     },
+     {
+      "label": "Closed / exited",
+      "amount": -209737885.34,
+      "accounts": 5
+     },
+     {
+      "label": "Upgraded to standard",
+      "amount": -97237913.25,
+      "accounts": 2
+     }
+    ]
+   },
+   "roll_rates": [],
+   "concentration": {
+    "accounts_changed": 19,
+    "gross_movement": 339505936.75,
+    "accounts_for_50pct": 4,
+    "accounts_for_80pct": 6
+   },
+   "unusual": {
+    "z": -3.0026303753123567,
+    "rank_of_13": 1,
+    "series": [
+     [
+      "2024-03-31",
+      0.0426221809396096
+     ],
+     [
+      "2024-04-30",
+      0.044260340148132314
+     ],
+     [
+      "2024-05-31",
+      0.044618224150083666
+     ],
+     [
+      "2024-06-30",
+      0.04868227166248639
+     ],
+     [
+      "2024-07-31",
+      0.04448334194546865
+     ],
+     [
+      "2024-08-31",
+      0.05078214049933788
+     ],
+     [
+      "2024-09-30",
+      0.0469330801925908
+     ],
+     [
+      "2024-10-31",
+      0.05335941055065683
+     ],
+     [
+      "2024-11-30",
+      0.05609121733013385
+     ],
+     [
+      "2024-12-31",
+      0.06030207195737205
+     ],
+     [
+      "2025-01-31",
+      0.05819014164166501
+     ],
+     [
+      "2025-02-28",
+      0.06272619670113962
+     ],
+     [
+      "2025-03-31",
+      0.06137105674761249
+     ],
+     [
+      "2025-04-30",
+      0.05618908564958821
+     ],
+     [
+      "2025-05-31",
+      0.053334758381984
+     ],
+     [
+      "2025-06-30",
+      0.05169829354596706
+     ],
+     [
+      "2025-07-31",
+      0.05324867815093038
+     ],
+     [
+      "2025-08-31",
+      0.047876667907751615
+     ],
+     [
+      "2025-09-30",
+      0.0524016798778967
+     ],
+     [
+      "2025-10-31",
+      0.058643824112883255
+     ],
+     [
+      "2025-11-30",
+      0.054665976646322216
+     ],
+     [
+      "2025-12-31",
+      0.05134866743809509
+     ],
+     [
+      "2026-01-31",
+      0.04674765468623293
+     ],
+     [
+      "2026-02-28",
+      0.0398337060990149
+     ],
+     [
+      "2026-03-31",
+      0.02622137613341115
+     ]
+    ]
+   },
+   "extra": {},
+   "findings": [
+    {
+     "question_id": "q4_gnpa",
+     "kind": "change",
+     "text": "Gross NPA ratio fell 1.36 pp vs last month to 2.62% (largest monthly move in 13 months).",
+     "score": 0.6,
+     "kpi": "gross_npa_ratio",
+     "dimension": null,
+     "segment": null,
+     "drilldown": null
+    },
+    {
+     "question_id": "q4_gnpa",
+     "kind": "contributor",
+     "text": "DEMO-WEST (branch) accounted for 59% of the change in Gross NPA ratio vs last month.",
+     "score": 0.5850243669743462,
+     "kpi": "gross_npa_ratio",
+     "dimension": "branch_code",
+     "segment": "DEMO-WEST",
+     "drilldown": {
+      "metric": "gross_npa_ratio",
+      "dimensions": [
+       "branch_code"
+      ]
+     }
+    },
+    {
+     "question_id": "q4_gnpa",
+     "kind": "bridge",
+     "text": "Closed / exited: −₹20.97 Cr (5 accounts), 76% of the NPA outstanding movement.",
+     "score": 0.7642237265161482,
+     "kpi": "gross_npa_ratio",
+     "dimension": null,
+     "segment": "Closed / exited",
+     "drilldown": null
+    },
+    {
+     "question_id": "q4_gnpa",
+     "kind": "mix_rate",
+     "text": "By branch, the change is driven by rate (segments got worse or better): rate -1.31 pp, mix -0.05 pp.",
+     "score": 0.4,
+     "kpi": "gross_npa_ratio",
+     "dimension": "branch_code",
+     "segment": null,
+     "drilldown": null
+    }
+   ],
+   "caveats": [
+    "NPA status is the lender's flag; reasons for slippage (borrower, economic) are not in the data.",
+    "Write-offs and closures reduce NPA mechanically."
+   ],
+   "drilldowns": [
+    {
+     "metric": "gross_npa_ratio",
+     "dimensions": [
+      "branch_code"
+     ]
+    },
+    {
+     "metric": "npa_outstanding",
+     "dimensions": [
+      "loan_group"
+     ]
+    }
+   ],
+   "unavailable": []
+  },
+  {
+   "id": "q5_par90",
+   "theme": "Asset quality",
+   "question": "What drove the change in PAR 90+?",
+   "answer": "PAR 90+ ratio was 2.62% at Mar 2026 (-1.36 pp vs last month). -2.51 pp vs previous quarter. -3.51 pp vs last year. Main driver: Closed / exited: −₹20.97 Cr (5 accounts), 76% of the PAR 90+ movement.",
+   "rag": "amber",
+   "kpi": "par_90_plus_ratio",
+   "comparisons": {
+    "mom": {
+     "value_a": 0.0398337060990149,
+     "value_b": 0.02622137613341115,
+     "delta": -0.013612329965603746,
+     "delta_pct": -0.3417289350824523,
+     "num_a": 807814195.39,
+     "num_b": 533368534.96,
+     "den_a": 20279664497.75,
+     "den_b": 20340981809.89
+    },
+    "qoq": {
+     "value_a": 0.05134866743809509,
+     "value_b": 0.02622137613341115,
+     "delta": -0.025127291304683937,
+     "delta_pct": -0.48934651196113105,
+     "num_a": 986158552.31,
+     "num_b": 533368534.96,
+     "den_a": 19205143999.09,
+     "den_b": 20340981809.89
+    },
+    "yoy": {
+     "value_a": 0.06137105674761249,
+     "value_b": 0.02622137613341115,
+     "delta": -0.035149680614201345,
+     "delta_pct": -0.5727403515105476,
+     "num_a": 1143703157.55,
+     "num_b": 533368534.96,
+     "den_a": 18635871991.8,
+     "den_b": 20340981809.89
+    }
+   },
+   "comparison_windows": {
+    "mom": {
+     "kind": "mom",
+     "a": {
+      "label": "Feb 2026",
+      "start": "2026-02-01",
+      "end": "2026-02-28"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    },
+    "qoq": {
+     "kind": "qoq",
+     "a": {
+      "label": "Q3 FY26",
+      "start": "2025-10-01",
+      "end": "2025-12-31"
+     },
+     "b": {
+      "label": "Q4 FY26",
+      "start": "2026-01-01",
+      "end": "2026-03-31"
+     }
+    },
+    "yoy": {
+     "kind": "yoy",
+     "a": {
+      "label": "Mar 2025",
+      "start": "2025-03-01",
+      "end": "2025-03-31"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    }
+   },
+   "contributions": {
+    "state_name": [
+     {
+      "dimension": "state_name",
+      "segment": "Maharashtra",
+      "value_a": 0.041446337863136895,
+      "value_b": 0.017535329568263872,
+      "delta": -0.005156901130506543,
+      "share": 0.378840444180918,
+      "mix": -0.00012963164272958123,
+      "rate": -0.005027269487776962
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Gujarat",
+      "value_a": 0.03510108118498871,
+      "value_b": 0.017273584162600678,
+      "delta": -0.0023591752071340606,
+      "share": 0.17331163827906992,
+      "mix": -3.020477751878608e-6,
+      "rate": -0.002356154729382182
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Telangana",
+      "value_a": 0.028496014257215593,
+      "value_b": 0.0,
+      "delta": -0.0022648959357831596,
+      "share": 0.1663856181495895,
+      "mix": 1.4206411176436014e-6,
+      "rate": -0.002266316576900803
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Karnataka",
+      "value_a": 0.06569205747072214,
+      "value_b": 0.049435286393015525,
+      "delta": -0.001889371667563677,
+      "share": 0.13879855045666886,
+      "mix": 0.0002911217603784301,
+      "rate": -0.002180493427942107
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Uttar Pradesh",
+      "value_a": 0.039286047629062036,
+      "value_b": 0.030657786627510036,
+      "delta": -0.001217561437166407,
+      "share": 0.08944548363454286,
+      "mix": 0.000017672270824610143,
+      "rate": -0.0012352337079910172
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Tamil Nadu",
+      "value_a": 0.08707209980135505,
+      "value_b": 0.07872231899243823,
+      "delta": -0.0007762223034824769,
+      "share": 0.05702347103279679,
+      "mix": 0.00009730057859234163,
+      "rate": -0.0008735228820748185
+     },
+     {
+      "dimension": "state_name",
+      "segment": "West Bengal",
+      "value_a": 0.02035937456250655,
+      "value_b": 0.022049658787071356,
+      "delta": 0.00005179771603258073,
+      "share": -0.0038052057335860616,
+      "mix": -0.000014467629208585868,
+      "rate": 0.00006626534524116659
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Rajasthan",
+      "value_a": 0.0,
+      "value_b": 0.0,
+      "delta": 0.0,
+      "share": -0.0,
+      "mix": 0.0,
+      "rate": 0.0
+     }
+    ],
+    "branch_code": [
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-WEST",
+      "value_a": 0.07117459465705292,
+      "value_b": 0.03937942432632082,
+      "delta": -0.007963544721173256,
+      "share": 0.5850243669743462,
+      "mix": -0.00017289905300443863,
+      "rate": -0.007790645668168817
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-NORTH",
+      "value_a": 0.06891061267897385,
+      "value_b": 0.05182520973324854,
+      "delta": -0.004142926727703586,
+      "share": 0.30435103602190966,
+      "mix": -0.00035055959398564324,
+      "rate": -0.0037923671337179426
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-SOUTH",
+      "value_a": 0.020341092692722957,
+      "value_b": 0.014188908994765988,
+      "delta": -0.0015998062651886708,
+      "share": 0.117526262530451,
+      "mix": 0.000013683232102029375,
+      "rate": -0.0016134894972907002
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-EAST",
+      "value_a": 0.00547580827375586,
+      "value_b": 0.005655424815454603,
+      "delta": 0.00009394774846176758,
+      "share": -0.006901665526706965,
+      "mix": 0.00004531734149253507,
+      "rate": 0.00004863040696923251
+     }
+    ],
+    "product_code": [
+     {
+      "dimension": "product_code",
+      "segment": "DF-RE",
+      "value_a": 0.052062642608702026,
+      "value_b": 0.030444996134687534,
+      "delta": -0.005155922117582019,
+      "share": 0.3787685231411696,
+      "mix": 0.00003897409296272979,
+      "rate": -0.005194896210544749
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-GF",
+      "value_a": 0.04749280580313333,
+      "value_b": 0.031242667541644096,
+      "delta": -0.004089216794213541,
+      "share": 0.30040535342196084,
+      "mix": -0.000012991338374355546,
+      "rate": -0.004076225455839185
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-EF",
+      "value_a": 0.0379138581763129,
+      "value_b": 0.026718314601202314,
+      "delta": -0.0031177053502667706,
+      "share": 0.229035393510496,
+      "mix": -0.00008932057630823706,
+      "rate": -0.0030283847739585334
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-WC",
+      "value_a": 0.021570314916103138,
+      "value_b": 0.01615798938320137,
+      "delta": -0.0012494857035414105,
+      "share": 0.0917907299263732,
+      "mix": 0.000040543344828318787,
+      "rate": -0.0012900290483697293
+     }
+    ],
+    "loan_group": [
+     {
+      "dimension": "loan_group",
+      "segment": "Rural Enterprise",
+      "value_a": 0.052062642608702026,
+      "value_b": 0.030444996134687534,
+      "delta": -0.005155922117582019,
+      "share": 0.3787685231411696,
+      "mix": 0.00003897409296272979,
+      "rate": -0.005194896210544749
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Growth Finance",
+      "value_a": 0.04749280580313333,
+      "value_b": 0.031242667541644096,
+      "delta": -0.004089216794213541,
+      "share": 0.30040535342196084,
+      "mix": -0.000012991338374355546,
+      "rate": -0.004076225455839185
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Enterprise Flex",
+      "value_a": 0.0379138581763129,
+      "value_b": 0.026718314601202314,
+      "delta": -0.0031177053502667706,
+      "share": 0.229035393510496,
+      "mix": -0.00008932057630823706,
+      "rate": -0.0030283847739585334
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Working Capital Plus",
+      "value_a": 0.021570314916103138,
+      "value_b": 0.01615798938320137,
+      "delta": -0.0012494857035414105,
+      "share": 0.0917907299263732,
+      "mix": 0.000040543344828318787,
+      "rate": -0.0012900290483697293
+     }
+    ],
+    "ticket_size": [
+     {
+      "dimension": "ticket_size",
+      "segment": "Above 2.5 Cr",
+      "value_a": 0.03528498824673009,
+      "value_b": 0.02228705443571441,
+      "delta": -0.007523286599179914,
+      "share": 0.5526817685282458,
+      "mix": 0.00008895524707956524,
+      "rate": -0.007612241846259479
+     },
+     {
+      "dimension": "ticket_size",
+      "segment": "Up to 1.5 Cr",
+      "value_a": 0.06101121379301833,
+      "value_b": 0.027571122150710167,
+      "delta": -0.0031024528795812376,
+      "share": 0.2279149041656099,
+      "mix": -0.00012928914665591903,
+      "rate": -0.0029731637329253185
+     },
+     {
+      "dimension": "ticket_size",
+      "segment": "1.5 - 2.5 Cr",
+      "value_a": 0.04211655239201328,
+      "value_b": 0.03295920046479395,
+      "delta": -0.002986590486842594,
+      "share": 0.21940332730614426,
+      "mix": -6.4246410551836594e-6,
+      "rate": -0.00298016584578741
+     }
+    ]
+   },
+   "mix_rate": {
+    "state_name": {
+     "mix": 0.0002603955012229798,
+     "rate": -0.013872725466826724
+    },
+    "branch_code": {
+     "mix": -0.0004644580733955174,
+     "rate": -0.013147871892208228
+    },
+    "product_code": {
+     "mix": -0.000022794476891544028,
+     "rate": -0.013589535488712197
+    },
+    "loan_group": {
+     "mix": -0.000022794476891544028,
+     "rate": -0.013589535488712197
+    },
+    "ticket_size": {
+     "mix": -0.00004675854063153745,
+     "rate": -0.013565571424972207
+    }
+   },
+   "num_den": {
+    "numerator": -0.013512649883077852,
+    "denominator": -0.00009968008252589193,
+    "total": -0.013612329965603746
+   },
+   "bridge": {
+    "kind": "par90",
+    "opening": 807814195.3900001,
+    "closing": 533368534.96,
+    "steps": [
+     {
+      "label": "Balance change (stayed 90+)",
+      "amount": 32530138.159999967,
+      "accounts": 12
+     },
+     {
+      "label": "Closed / exited",
+      "amount": -209737885.34,
+      "accounts": 5
+     },
+     {
+      "label": "Cured to Current",
+      "amount": -97237913.25,
+      "accounts": 2
+     }
+    ]
+   },
+   "roll_rates": [],
+   "concentration": {
+    "accounts_changed": 19,
+    "gross_movement": 339505936.75,
+    "accounts_for_50pct": 4,
+    "accounts_for_80pct": 6
+   },
+   "unusual": {
+    "z": -3.0026303753123567,
+    "rank_of_13": 1,
+    "series": [
+     [
+      "2024-03-31",
+      0.0426221809396096
+     ],
+     [
+      "2024-04-30",
+      0.044260340148132314
+     ],
+     [
+      "2024-05-31",
+      0.044618224150083666
+     ],
+     [
+      "2024-06-30",
+      0.04868227166248639
+     ],
+     [
+      "2024-07-31",
+      0.04448334194546865
+     ],
+     [
+      "2024-08-31",
+      0.05078214049933788
+     ],
+     [
+      "2024-09-30",
+      0.0469330801925908
+     ],
+     [
+      "2024-10-31",
+      0.05335941055065683
+     ],
+     [
+      "2024-11-30",
+      0.05609121733013385
+     ],
+     [
+      "2024-12-31",
+      0.06030207195737205
+     ],
+     [
+      "2025-01-31",
+      0.05819014164166501
+     ],
+     [
+      "2025-02-28",
+      0.06272619670113962
+     ],
+     [
+      "2025-03-31",
+      0.06137105674761249
+     ],
+     [
+      "2025-04-30",
+      0.05618908564958821
+     ],
+     [
+      "2025-05-31",
+      0.053334758381984
+     ],
+     [
+      "2025-06-30",
+      0.05169829354596706
+     ],
+     [
+      "2025-07-31",
+      0.05324867815093038
+     ],
+     [
+      "2025-08-31",
+      0.047876667907751615
+     ],
+     [
+      "2025-09-30",
+      0.0524016798778967
+     ],
+     [
+      "2025-10-31",
+      0.058643824112883255
+     ],
+     [
+      "2025-11-30",
+      0.054665976646322216
+     ],
+     [
+      "2025-12-31",
+      0.05134866743809509
+     ],
+     [
+      "2026-01-31",
+      0.04674765468623293
+     ],
+     [
+      "2026-02-28",
+      0.0398337060990149
+     ],
+     [
+      "2026-03-31",
+      0.02622137613341115
+     ]
+    ]
+   },
+   "extra": {},
+   "findings": [
+    {
+     "question_id": "q5_par90",
+     "kind": "change",
+     "text": "PAR 90+ ratio fell 1.36 pp vs last month to 2.62% (largest monthly move in 13 months).",
+     "score": 0.6,
+     "kpi": "par_90_plus_ratio",
+     "dimension": null,
+     "segment": null,
+     "drilldown": null
+    },
+    {
+     "question_id": "q5_par90",
+     "kind": "contributor",
+     "text": "DEMO-WEST (branch) accounted for 59% of the change in PAR 90+ ratio vs last month.",
+     "score": 0.5850243669743462,
+     "kpi": "par_90_plus_ratio",
+     "dimension": "branch_code",
+     "segment": "DEMO-WEST",
+     "drilldown": {
+      "metric": "par_90_plus_ratio",
+      "dimensions": [
+       "branch_code"
+      ]
+     }
+    },
+    {
+     "question_id": "q5_par90",
+     "kind": "bridge",
+     "text": "Closed / exited: −₹20.97 Cr (5 accounts), 76% of the PAR 90+ movement.",
+     "score": 0.7642237265161479,
+     "kpi": "par_90_plus_ratio",
+     "dimension": null,
+     "segment": "Closed / exited",
+     "drilldown": null
+    },
+    {
+     "question_id": "q5_par90",
+     "kind": "mix_rate",
+     "text": "By branch, the change is driven by rate (segments got worse or better): rate -1.31 pp, mix -0.05 pp.",
+     "score": 0.4,
+     "kpi": "par_90_plus_ratio",
+     "dimension": "branch_code",
+     "segment": null,
+     "drilldown": null
+    }
+   ],
+   "caveats": [
+    "Write-offs reduce PAR 90+ mechanically.",
+    "Cannot attribute to borrower circumstances or macro factors."
+   ],
+   "drilldowns": [
+    {
+     "metric": "par_90_plus_amount",
+     "dimensions": [
+      "branch_code"
+     ]
+    },
+    {
+     "metric": "par_90_plus_amount",
+     "dimensions": [
+      "loan_group"
+     ]
+    }
+   ],
+   "unavailable": []
+  },
+  {
+   "id": "q6_roll_rates",
+   "theme": "Early warning",
+   "question": "Are accounts slipping into later buckets faster?",
+   "answer": "No forward roll rate is materially above its 12-month average in Mar 2026. Key rates: Current → 1-30 DPD 1% (avg 1%).",
+   "rag": "green",
+   "kpi": "par_30_plus_ratio",
+   "comparisons": {},
+   "comparison_windows": {},
+   "contributions": {},
+   "mix_rate": null,
+   "num_den": null,
+   "bridge": null,
+   "roll_rates": [
+    {
+     "from_bucket": "Current",
+     "to_bucket": "Current",
+     "accounts": 471,
+     "rate": 0.9853556485355649,
+     "avg_rate_12m": 0.9836138754495733
+    },
+    {
+     "from_bucket": "Current",
+     "to_bucket": "1-30 DPD",
+     "accounts": 7,
+     "rate": 0.014644351464435146,
+     "avg_rate_12m": 0.012459989988154256
+    },
+    {
+     "from_bucket": "1-30 DPD",
+     "to_bucket": "Current",
+     "accounts": 2,
+     "rate": 0.25,
+     "avg_rate_12m": 0.5723815536315536
+    },
+    {
+     "from_bucket": "1-30 DPD",
+     "to_bucket": "1-30 DPD",
+     "accounts": 3,
+     "rate": 0.375,
+     "avg_rate_12m": 0.19132395382395384
+    },
+    {
+     "from_bucket": "1-30 DPD",
+     "to_bucket": "31-60 DPD",
+     "accounts": 3,
+     "rate": 0.375,
+     "avg_rate_12m": 0.22240560365560366
+    },
+    {
+     "from_bucket": "31-60 DPD",
+     "to_bucket": "61-90 DPD",
+     "accounts": 2,
+     "rate": 1.0,
+     "avg_rate_12m": 0.5378968253968254
+    },
+    {
+     "from_bucket": "90+ DPD",
+     "to_bucket": "Current",
+     "accounts": 2,
+     "rate": 0.14285714285714285,
+     "avg_rate_12m": 0.02860580870279146
+    },
+    {
+     "from_bucket": "90+ DPD",
+     "to_bucket": "90+ DPD",
+     "accounts": 12,
+     "rate": 0.8571428571428571,
+     "avg_rate_12m": 0.9713941912972085
+    }
+   ],
+   "concentration": null,
+   "unusual": null,
+   "extra": {},
+   "findings": [],
+   "caveats": [
+    "Roll rates are month-on-month account transitions; small buckets make rates volatile."
+   ],
+   "drilldowns": [
+    {
+     "metric": "account_count",
+     "dimensions": [
+      "par_bucket"
+     ]
+    }
+   ],
+   "unavailable": []
+  },
+  {
+   "id": "q7_deterioration",
+   "theme": "Early warning",
+   "question": "Which branches and states are deteriorating fastest?",
+   "answer": "Fastest deterioration vs last month: Gujarat (state, 13% of the book): PAR 30+ ratio 3.51% → 4.47% (+0.96 pp).; DEMO-EAST (branch, 27% of the book): PAR 30+ ratio 0.55% → 0.98% (+0.43 pp).; West Bengal (state, 4% of the book): Gross NPA ratio 2.04% → 2.20% (+0.17 pp).; DEMO-EAST (branch, 27% of the book): Gross NPA ratio 0.55% → 0.57% (+0.02 pp).",
+   "rag": "none",
+   "kpi": "par_30_plus_ratio",
+   "comparisons": {},
+   "comparison_windows": {
+    "mom": {
+     "kind": "mom",
+     "a": {
+      "label": "Feb 2026",
+      "start": "2026-02-01",
+      "end": "2026-02-28"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    },
+    "qoq": {
+     "kind": "qoq",
+     "a": {
+      "label": "Q3 FY26",
+      "start": "2025-10-01",
+      "end": "2025-12-31"
+     },
+     "b": {
+      "label": "Q4 FY26",
+      "start": "2026-01-01",
+      "end": "2026-03-31"
+     }
+    }
+   },
+   "contributions": {},
+   "mix_rate": null,
+   "num_den": null,
+   "bridge": null,
+   "roll_rates": [],
+   "concentration": null,
+   "unusual": null,
+   "extra": {
+    "deterioration": [
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Gujarat",
+      "value_a": 0.03255734674628809,
+      "value_b": 0.04469757910434261,
+      "delta": 0.012140232358054524,
+      "book_share": 0.1321064086667374
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Gujarat",
+      "value_a": 0.03510108118498871,
+      "value_b": 0.04469757910434261,
+      "delta": 0.009596497919353901,
+      "book_share": 0.1321064086667374
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-EAST",
+      "value_a": 0.00547580827375586,
+      "value_b": 0.009777904799707967,
+      "delta": 0.0043020965259521066,
+      "book_share": 0.27481689155152095
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Tamil Nadu",
+      "value_a": 0.10940893867349563,
+      "value_b": 0.11299993202762727,
+      "delta": 0.0035909933541316413,
+      "book_share": 0.10520313990692136
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Karnataka",
+      "value_a": 0.06569205747072214,
+      "value_b": 0.06795426744502203,
+      "delta": 0.002262209974299892,
+      "book_share": 0.13665701558262355
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "West Bengal",
+      "value_a": 0.02035937456250655,
+      "value_b": 0.022049658787071356,
+      "delta": 0.0016902842245648045,
+      "book_share": 0.038862525185763136
+     },
+     {
+      "comparison": "mom",
+      "kpi": "gross_npa_ratio",
+      "dimension": "state_name",
+      "segment": "West Bengal",
+      "value_a": 0.02035937456250655,
+      "value_b": 0.022049658787071356,
+      "delta": 0.0016902842245648045,
+      "book_share": 0.038862525185763136
+     },
+     {
+      "comparison": "mom",
+      "kpi": "gross_npa_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-EAST",
+      "value_a": 0.00547580827375586,
+      "value_b": 0.005655424815454603,
+      "delta": 0.00017961654169874278,
+      "book_share": 0.27481689155152095
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Rajasthan",
+      "value_a": 0.0,
+      "value_b": 0.0,
+      "delta": 0.0,
+      "book_share": 0.08072391350508168
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Delhi",
+      "value_a": 0.0,
+      "value_b": 0.0,
+      "delta": 0.0,
+      "book_share": 0.05092253859527941
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Madhya Pradesh",
+      "value_a": 0.0,
+      "value_b": 0.0,
+      "delta": 0.0,
+      "book_share": 0.024478229629403155
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Madhya Pradesh",
+      "value_a": 0.0,
+      "value_b": 0.0,
+      "delta": 0.0,
+      "book_share": 0.024478229629403155
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-NORTH",
+      "value_a": 0.06891061267897385,
+      "value_b": 0.0683633984381495,
+      "delta": -0.0005472142408243508,
+      "book_share": 0.2190618058418143
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Rajasthan",
+      "value_a": 0.003951856556674905,
+      "value_b": 0.0,
+      "delta": -0.003951856556674905,
+      "book_share": 0.08072391350508168
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-SOUTH",
+      "value_a": 0.03233389915302563,
+      "value_b": 0.02691477427730175,
+      "delta": -0.005419124875723883,
+      "book_share": 0.26265916421017105
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-EAST",
+      "value_a": 0.015436986211480815,
+      "value_b": 0.009777904799707967,
+      "delta": -0.005659081411772848,
+      "book_share": 0.27481689155152095
+     },
+     {
+      "comparison": "mom",
+      "kpi": "gross_npa_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-SOUTH",
+      "value_a": 0.020341092692722957,
+      "value_b": 0.014188908994765988,
+      "delta": -0.006152183697956969,
+      "book_share": 0.26265916421017105
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-SOUTH",
+      "value_a": 0.03442267781293881,
+      "value_b": 0.02691477427730175,
+      "delta": -0.007507903535637062,
+      "book_share": 0.26265916421017105
+     },
+     {
+      "comparison": "mom",
+      "kpi": "gross_npa_ratio",
+      "dimension": "state_name",
+      "segment": "Tamil Nadu",
+      "value_a": 0.08707209980135505,
+      "value_b": 0.07872231899243823,
+      "delta": -0.008349780808916824,
+      "book_share": 0.10520313990692136
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Uttar Pradesh",
+      "value_a": 0.039286047629062036,
+      "value_b": 0.030657786627510036,
+      "delta": -0.008628261001552,
+      "book_share": 0.14341403864250227
+     },
+     {
+      "comparison": "mom",
+      "kpi": "gross_npa_ratio",
+      "dimension": "state_name",
+      "segment": "Uttar Pradesh",
+      "value_a": 0.039286047629062036,
+      "value_b": 0.030657786627510036,
+      "delta": -0.008628261001552,
+      "book_share": 0.14341403864250227
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Tamil Nadu",
+      "value_a": 0.12163225583134467,
+      "value_b": 0.11299993202762727,
+      "delta": -0.008632323803717395,
+      "book_share": 0.10520313990692136
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "gross_npa_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-EAST",
+      "value_a": 0.015436986211480815,
+      "value_b": 0.005655424815454603,
+      "delta": -0.009781561396026213,
+      "book_share": 0.27481689155152095
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "gross_npa_ratio",
+      "dimension": "state_name",
+      "segment": "Karnataka",
+      "value_a": 0.06261764460456838,
+      "value_b": 0.049435286393015525,
+      "delta": -0.013182358211552857,
+      "book_share": 0.13665701558262355
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "gross_npa_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-SOUTH",
+      "value_a": 0.02847857825871305,
+      "value_b": 0.014188908994765988,
+      "delta": -0.01428966926394706,
+      "book_share": 0.26265916421017105
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "gross_npa_ratio",
+      "dimension": "state_name",
+      "segment": "Gujarat",
+      "value_a": 0.03255734674628809,
+      "value_b": 0.017273584162600678,
+      "delta": -0.01528376258368741,
+      "book_share": 0.1321064086667374
+     },
+     {
+      "comparison": "mom",
+      "kpi": "gross_npa_ratio",
+      "dimension": "state_name",
+      "segment": "Karnataka",
+      "value_a": 0.06569205747072214,
+      "value_b": 0.049435286393015525,
+      "delta": -0.016256771077706615,
+      "book_share": 0.13665701558262355
+     },
+     {
+      "comparison": "mom",
+      "kpi": "gross_npa_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-NORTH",
+      "value_a": 0.06891061267897385,
+      "value_b": 0.05182520973324854,
+      "delta": -0.017085402945725303,
+      "book_share": 0.2190618058418143
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Maharashtra",
+      "value_a": 0.039006651213387776,
+      "value_b": 0.021714008635505915,
+      "delta": -0.01729264257788186,
+      "book_share": 0.208051333905248
+     },
+     {
+      "comparison": "mom",
+      "kpi": "gross_npa_ratio",
+      "dimension": "state_name",
+      "segment": "Gujarat",
+      "value_a": 0.03510108118498871,
+      "value_b": 0.017273584162600678,
+      "delta": -0.017827497022388034,
+      "book_share": 0.1321064086667374
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Karnataka",
+      "value_a": 0.08826301942477804,
+      "value_b": 0.06795426744502203,
+      "delta": -0.020308751979756012,
+      "book_share": 0.13665701558262355
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Delhi",
+      "value_a": 0.021152363403508113,
+      "value_b": 0.0,
+      "delta": -0.021152363403508113,
+      "book_share": 0.05092253859527941
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-WEST",
+      "value_a": 0.07117459465705292,
+      "value_b": 0.04977425901752392,
+      "delta": -0.021400335639529,
+      "book_share": 0.24346213839649372
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "gross_npa_ratio",
+      "dimension": "state_name",
+      "segment": "Maharashtra",
+      "value_a": 0.039006651213387776,
+      "value_b": 0.017535329568263872,
+      "delta": -0.021471321645123904,
+      "book_share": 0.208051333905248
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Maharashtra",
+      "value_a": 0.045291193403452605,
+      "value_b": 0.021714008635505915,
+      "delta": -0.02357718476794669,
+      "book_share": 0.208051333905248
+     },
+     {
+      "comparison": "mom",
+      "kpi": "gross_npa_ratio",
+      "dimension": "state_name",
+      "segment": "Maharashtra",
+      "value_a": 0.041446337863136895,
+      "value_b": 0.017535329568263872,
+      "delta": -0.023911008294873023,
+      "book_share": 0.208051333905248
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-WEST",
+      "value_a": 0.0780270333769018,
+      "value_b": 0.04977425901752392,
+      "delta": -0.028252774359377876,
+      "book_share": 0.24346213839649372
+     },
+     {
+      "comparison": "mom",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Telangana",
+      "value_a": 0.028496014257215593,
+      "value_b": 0.0,
+      "delta": -0.028496014257215593,
+      "book_share": 0.07958085638044007
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Uttar Pradesh",
+      "value_a": 0.059719992333763794,
+      "value_b": 0.030657786627510036,
+      "delta": -0.029062205706253758,
+      "book_share": 0.14341403864250227
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "gross_npa_ratio",
+      "dimension": "state_name",
+      "segment": "Uttar Pradesh",
+      "value_a": 0.059719992333763794,
+      "value_b": 0.030657786627510036,
+      "delta": -0.029062205706253758,
+      "book_share": 0.14341403864250227
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "gross_npa_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-WEST",
+      "value_a": 0.06944716627437073,
+      "value_b": 0.03937942432632082,
+      "delta": -0.030067741948049904,
+      "book_share": 0.24346213839649372
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-NORTH",
+      "value_a": 0.09914984007518113,
+      "value_b": 0.0683633984381495,
+      "delta": -0.030786441637031634,
+      "book_share": 0.2190618058418143
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "West Bengal",
+      "value_a": 0.05328543494828655,
+      "value_b": 0.022049658787071356,
+      "delta": -0.031235776161215197,
+      "book_share": 0.038862525185763136
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "gross_npa_ratio",
+      "dimension": "state_name",
+      "segment": "West Bengal",
+      "value_a": 0.05328543494828655,
+      "value_b": 0.022049658787071356,
+      "delta": -0.031235776161215197,
+      "book_share": 0.038862525185763136
+     },
+     {
+      "comparison": "mom",
+      "kpi": "gross_npa_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-WEST",
+      "value_a": 0.07117459465705292,
+      "value_b": 0.03937942432632082,
+      "delta": -0.0317951703307321,
+      "book_share": 0.24346213839649372
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "gross_npa_ratio",
+      "dimension": "state_name",
+      "segment": "Tamil Nadu",
+      "value_a": 0.12163225583134467,
+      "value_b": 0.07872231899243823,
+      "delta": -0.04290993683890644,
+      "book_share": 0.10520313990692136
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "gross_npa_ratio",
+      "dimension": "branch_code",
+      "segment": "DEMO-NORTH",
+      "value_a": 0.09914984007518113,
+      "value_b": 0.05182520973324854,
+      "delta": -0.047324630341932586,
+      "book_share": 0.2190618058418143
+     },
+     {
+      "comparison": "qoq",
+      "kpi": "par_30_plus_ratio",
+      "dimension": "state_name",
+      "segment": "Telangana",
+      "value_a": 0.07362356057013117,
+      "value_b": 0.0,
+      "delta": -0.07362356057013117,
+      "book_share": 0.07958085638044007
+     }
+    ]
+   },
+   "findings": [
+    {
+     "question_id": "q7_deterioration",
+     "kind": "deterioration",
+     "text": "Gujarat (state, 13% of the book): PAR 30+ ratio 3.51% → 4.47% (+0.96 pp).",
+     "score": 0.12677588759036615,
+     "kpi": "par_30_plus_ratio",
+     "dimension": "state_name",
+     "segment": "Gujarat",
+     "drilldown": {
+      "metric": "par_30_plus_ratio",
+      "dimensions": [
+       "state_name"
+      ]
+     }
+    },
+    {
+     "question_id": "q7_deterioration",
+     "kind": "deterioration",
+     "text": "DEMO-EAST (branch, 27% of the book): PAR 30+ ratio 0.55% → 0.98% (+0.43 pp).",
+     "score": 0.08604193051904213,
+     "kpi": "par_30_plus_ratio",
+     "dimension": "branch_code",
+     "segment": "DEMO-EAST",
+     "drilldown": {
+      "metric": "par_30_plus_ratio",
+      "dimensions": [
+       "branch_code"
+      ]
+     }
+    },
+    {
+     "question_id": "q7_deterioration",
+     "kind": "deterioration",
+     "text": "West Bengal (state, 4% of the book): Gross NPA ratio 2.04% → 2.20% (+0.17 pp).",
+     "score": 0.006568871324824783,
+     "kpi": "gross_npa_ratio",
+     "dimension": "state_name",
+     "segment": "West Bengal",
+     "drilldown": {
+      "metric": "gross_npa_ratio",
+      "dimensions": [
+       "state_name"
+      ]
+     }
+    },
+    {
+     "question_id": "q7_deterioration",
+     "kind": "deterioration",
+     "text": "DEMO-EAST (branch, 27% of the book): Gross NPA ratio 0.55% → 0.57% (+0.02 pp).",
+     "score": 0.0035923308339748557,
+     "kpi": "gross_npa_ratio",
+     "dimension": "branch_code",
+     "segment": "DEMO-EAST",
+     "drilldown": {
+      "metric": "gross_npa_ratio",
+      "dimensions": [
+       "branch_code"
+      ]
+     }
+    }
+   ],
+   "caveats": [
+    "Ranks segments by the change in their own ratio; small segments can move sharply."
+   ],
+   "drilldowns": [
+    {
+     "metric": "par_30_plus_ratio",
+     "dimensions": [
+      "branch_code"
+     ]
+    }
+   ],
+   "unavailable": []
+  },
+  {
+   "id": "q8_collections",
+   "theme": "Collections",
+   "question": "What is collection efficiency and where did it drop?",
+   "answer": "Collection efficiency was 96.95% at Mar 2026 (+0.90 pp vs last month). +6.84 pp vs last year. Main driver: Above 2.5 Cr (ticket size) moved Collection efficiency vs last month by more than the whole net change (110%); other segments partly offset it.",
+   "rag": "green",
+   "kpi": "collection_efficiency",
+   "comparisons": {
+    "mom": {
+     "value_a": 0.9605180860013351,
+     "value_b": 0.9695108441626945,
+     "delta": 0.00899275816135936,
+     "delta_pct": 0.009362403782313433,
+     "num_a": 931752988.4,
+     "num_b": 982700884.26,
+     "den_a": 970052518.51,
+     "den_b": 1013604840.19
+    },
+    "yoy": {
+     "value_a": 0.9011236769911601,
+     "value_b": 0.9695108441626945,
+     "delta": 0.06838716717153437,
+     "delta_pct": 0.07589098912579703,
+     "num_a": 748348035.63,
+     "num_b": 982700884.26,
+     "den_a": 830460961.95,
+     "den_b": 1013604840.19
+    }
+   },
+   "comparison_windows": {
+    "mom": {
+     "kind": "mom",
+     "a": {
+      "label": "Feb 2026",
+      "start": "2026-02-01",
+      "end": "2026-02-28"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    },
+    "yoy": {
+     "kind": "yoy",
+     "a": {
+      "label": "Mar 2025",
+      "start": "2025-03-01",
+      "end": "2025-03-31"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    }
+   },
+   "contributions": {
+    "state_name": [
+     {
+      "dimension": "state_name",
+      "segment": "Tamil Nadu",
+      "value_a": 0.9335641057822818,
+      "value_b": 0.924714449443527,
+      "delta": -0.003816175230147119,
+      "share": -0.42436093150427384,
+      "mix": -0.0029546433737894706,
+      "rate": -0.0008615318563576484
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Karnataka",
+      "value_a": 0.9077003187364033,
+      "value_b": 0.9155919508198022,
+      "delta": 0.0032805810990893065,
+      "share": 0.36480254892047587,
+      "mix": 0.002337367750860844,
+      "rate": 0.0009432133482284628
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Maharashtra",
+      "value_a": 0.953046057097849,
+      "value_b": 0.9714849793405221,
+      "delta": 0.002764250147410552,
+      "share": 0.3073862432204786,
+      "mix": -0.0011344226536060392,
+      "rate": 0.0038986728010165913
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Gujarat",
+      "value_a": 0.9709091217897516,
+      "value_b": 0.9717512542110179,
+      "delta": 0.0019340795254015016,
+      "share": 0.21507078147747533,
+      "mix": 0.0018151611192978535,
+      "rate": 0.00011891840610364811
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Telangana",
+      "value_a": 0.9635961880470252,
+      "value_b": 1.0000000014561294,
+      "delta": 0.001725587252494248,
+      "share": 0.19188631802741657,
+      "mix": -0.0012575063704411953,
+      "rate": 0.0029830936229354433
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Uttar Pradesh",
+      "value_a": 0.9708593151422968,
+      "value_b": 0.9851531556280086,
+      "delta": 0.001641151830995705,
+      "share": 0.18249704946447995,
+      "mix": -0.0002727722642729272,
+      "rate": 0.0019139240952686322
+     },
+     {
+      "dimension": "state_name",
+      "segment": "West Bengal",
+      "value_a": 0.9769428214346756,
+      "value_b": 0.9769428235801593,
+      "delta": 0.0009615727904438852,
+      "share": 0.1069274602063281,
+      "mix": 0.0009615726920018583,
+      "rate": 9.84420268525669e-11
+     },
+     {
+      "dimension": "state_name",
+      "segment": "Madhya Pradesh",
+      "value_a": 0.9999999980348435,
+      "value_b": 1.0000000018408022,
+      "delta": 0.0006824956245743606,
+      "share": 0.07589391511793903,
+      "mix": 0.0006824955034849351,
+      "rate": 1.2108942550927276e-10
+     }
+    ],
+    "branch_code": [
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-WEST",
+      "value_a": 0.9216789705745739,
+      "value_b": 0.9554350964077032,
+      "delta": 0.008710210326695089,
+      "share": 0.9685805144990621,
+      "mix": 0.0002679224178121487,
+      "rate": 0.00844228790888294
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-EAST",
+      "value_a": 0.9961915693944621,
+      "value_b": 0.9930589016920457,
+      "delta": -0.003784572268191293,
+      "share": -0.42084666353567446,
+      "mix": -0.002937323922233928,
+      "rate": -0.000847248345957365
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-NORTH",
+      "value_a": 0.9379252749882568,
+      "value_b": 0.9466874638390682,
+      "delta": 0.002080404313727113,
+      "share": 0.23134218405497917,
+      "mix": 0.00011502959680798129,
+      "rate": 0.001965374716919132
+     },
+     {
+      "dimension": "branch_code",
+      "segment": "DEMO-SOUTH",
+      "value_a": 0.9805022213265545,
+      "value_b": 0.9785159712550746,
+      "delta": 0.001986715789128395,
+      "share": 0.22092396498162692,
+      "mix": 0.0024934992897240583,
+      "rate": -0.0005067835005956631
+     }
+    ],
+    "product_code": [
+     {
+      "dimension": "product_code",
+      "segment": "DF-EF",
+      "value_a": 0.9734389342977234,
+      "value_b": 0.9795056072936453,
+      "delta": 0.0026719943376518297,
+      "share": 0.2971273428805214,
+      "mix": 0.0011137321581818486,
+      "rate": 0.0015582621794699813
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-RE",
+      "value_a": 0.9307106567385605,
+      "value_b": 0.9415123602586704,
+      "delta": 0.0024486323725679904,
+      "share": 0.27228936090925093,
+      "mix": -0.000306785031021664,
+      "rate": 0.0027554174035896543
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-GF",
+      "value_a": 0.9607878417850414,
+      "value_b": 0.9751802447238416,
+      "delta": 0.002028030942587365,
+      "share": 0.2255182343612368,
+      "mix": -0.0015884169062060276,
+      "rate": 0.003616447848793393
+     },
+     {
+      "dimension": "product_code",
+      "segment": "DF-WC",
+      "value_a": 0.9784102189210898,
+      "value_b": 0.9827690057789132,
+      "delta": 0.001844100508552055,
+      "share": 0.20506506184897758,
+      "mix": 0.0008120353149235357,
+      "rate": 0.0010320651936285192
+     }
+    ],
+    "loan_group": [
+     {
+      "dimension": "loan_group",
+      "segment": "Enterprise Flex",
+      "value_a": 0.9734389342977234,
+      "value_b": 0.9795056072936453,
+      "delta": 0.0026719943376518297,
+      "share": 0.2971273428805214,
+      "mix": 0.0011137321581818486,
+      "rate": 0.0015582621794699813
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Rural Enterprise",
+      "value_a": 0.9307106567385605,
+      "value_b": 0.9415123602586704,
+      "delta": 0.0024486323725679904,
+      "share": 0.27228936090925093,
+      "mix": -0.000306785031021664,
+      "rate": 0.0027554174035896543
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Growth Finance",
+      "value_a": 0.9607878417850414,
+      "value_b": 0.9751802447238416,
+      "delta": 0.002028030942587365,
+      "share": 0.2255182343612368,
+      "mix": -0.0015884169062060276,
+      "rate": 0.003616447848793393
+     },
+     {
+      "dimension": "loan_group",
+      "segment": "Working Capital Plus",
+      "value_a": 0.9784102189210898,
+      "value_b": 0.9827690057789132,
+      "delta": 0.001844100508552055,
+      "share": 0.20506506184897758,
+      "mix": 0.0008120353149235357,
+      "rate": 0.0010320651936285192
+     }
+    ],
+    "ticket_size": [
+     {
+      "dimension": "ticket_size",
+      "segment": "Above 2.5 Cr",
+      "value_a": 0.9588869289248961,
+      "value_b": 0.9682774593330502,
+      "delta": 0.009855744617766494,
+      "share": 1.0959646018409865,
+      "mix": 0.004415859589026739,
+      "rate": 0.005439885028739755
+     },
+     {
+      "dimension": "ticket_size",
+      "segment": "Up to 1.5 Cr",
+      "value_a": 0.95645296200485,
+      "value_b": 0.9552598481870983,
+      "delta": -0.0013633945014622272,
+      "share": -0.15161027095341506,
+      "mix": -0.0012553168171461234,
+      "rate": -0.00010807768431610374
+     },
+     {
+      "dimension": "ticket_size",
+      "segment": "1.5 - 2.5 Cr",
+      "value_a": 0.9644730777223586,
+      "value_b": 0.9755959803990842,
+      "delta": 0.0005004080450550902,
+      "share": 0.055645669112428096,
+      "mix": -0.0031714922410335075,
+      "rate": 0.0036719002860885978
+     }
+    ]
+   },
+   "mix_rate": {
+    "state_name": {
+     "mix": -3.532418824919511e-6,
+     "rate": 0.008996290580184323
+    },
+    "branch_code": {
+     "mix": -0.00006087261788973982,
+     "rate": 0.009053630779249044
+    },
+    "product_code": {
+     "mix": 0.00003056553587769273,
+     "rate": 0.008962192625481548
+    },
+    "loan_group": {
+     "mix": 0.00003056553587769273,
+     "rate": 0.008962192625481548
+    },
+    "ticket_size": {
+     "mix": -0.00001094946915289178,
+     "rate": 0.009003707630512248
+    }
+   },
+   "num_den": {
+    "numerator": 0.05139241084843796,
+    "denominator": -0.042399652687078626,
+    "total": 0.00899275816135936
+   },
+   "bridge": null,
+   "roll_rates": [],
+   "concentration": null,
+   "unusual": {
+    "z": 0.3717036656230885,
+    "rank_of_13": 7,
+    "series": [
+     [
+      "2024-03-31",
+      0.9537102713354538
+     ],
+     [
+      "2024-04-30",
+      0.9476684323878992
+     ],
+     [
+      "2024-05-31",
+      0.9493323478822491
+     ],
+     [
+      "2024-06-30",
+      0.939711091615672
+     ],
+     [
+      "2024-07-31",
+      0.9436834236942949
+     ],
+     [
+      "2024-08-31",
+      0.9307772484148298
+     ],
+     [
+      "2024-09-30",
+      0.9251838038505367
+     ],
+     [
+      "2024-10-31",
+      0.9383881916886818
+     ],
+     [
+      "2024-11-30",
+      0.9358824163318495
+     ],
+     [
+      "2024-12-31",
+      0.9315999310579296
+     ],
+     [
+      "2025-01-31",
+      0.9340612072151611
+     ],
+     [
+      "2025-02-28",
+      0.9255486959634239
+     ],
+     [
+      "2025-03-31",
+      0.9011236769911601
+     ],
+     [
+      "2025-04-30",
+      0.9373373445301889
+     ],
+     [
+      "2025-05-31",
+      0.9471435284564556
+     ],
+     [
+      "2025-06-30",
+      0.9409729404259749
+     ],
+     [
+      "2025-07-31",
+      0.9334325003312112
+     ],
+     [
+      "2025-08-31",
+      0.9208954853975452
+     ],
+     [
+      "2025-09-30",
+      0.9491331978085051
+     ],
+     [
+      "2025-10-31",
+      0.941086910720614
+     ],
+     [
+      "2025-11-30",
+      0.9544246526886033
+     ],
+     [
+      "2025-12-31",
+      0.9558515196723378
+     ],
+     [
+      "2026-01-31",
+      0.957205120937649
+     ],
+     [
+      "2026-02-28",
+      0.9605180860013351
+     ],
+     [
+      "2026-03-31",
+      0.9695108441626945
+     ]
+    ]
+   },
+   "extra": {},
+   "findings": [
+    {
+     "question_id": "q8_collections",
+     "kind": "change",
+     "text": "Collection efficiency rose 0.90 pp vs last month to 96.95%.",
+     "score": 0.2543407331246177,
+     "kpi": "collection_efficiency",
+     "dimension": null,
+     "segment": null,
+     "drilldown": null
+    },
+    {
+     "question_id": "q8_collections",
+     "kind": "contributor",
+     "text": "Above 2.5 Cr (ticket size) moved Collection efficiency vs last month by more than the whole net change (110%); other segments partly offset it.",
+     "score": 0.4239012218743628,
+     "kpi": "collection_efficiency",
+     "dimension": "ticket_size",
+     "segment": "Above 2.5 Cr",
+     "drilldown": {
+      "metric": "collection_efficiency",
+      "dimensions": [
+       "ticket_size"
+      ]
+     }
+    },
+    {
+     "question_id": "q8_collections",
+     "kind": "mix_rate",
+     "text": "By branch, the change is driven by rate (segments got worse or better): rate +0.91 pp, mix -0.01 pp.",
+     "score": 0.16956048874974514,
+     "kpi": "collection_efficiency",
+     "dimension": "branch_code",
+     "segment": null,
+     "drilldown": null
+    }
+   ],
+   "caveats": [
+    "Measures collection against demand raised in the same month; overdue recoveries are not included."
+   ],
+   "drilldowns": [
+    {
+     "metric": "collection_efficiency",
+     "dimensions": [
+      "loan_group"
+     ]
+    },
+    {
+     "metric": "collection_efficiency",
+     "dimensions": [
+      "month"
+     ]
+    }
+   ],
+   "unavailable": []
+  },
+  {
+   "id": "q9_concentration",
+   "theme": "Concentration",
+   "question": "How concentrated is our risk?",
+   "answer": "Top 3 states hold 74% of NPA outstanding; large tickets (above ₹2.5 Cr) are 50% of NPA; 4 accounts explain half of this month's NPA movement.",
+   "rag": "none",
+   "kpi": "npa_outstanding",
+   "comparisons": {},
+   "comparison_windows": {
+    "mom": {
+     "kind": "mom",
+     "a": {
+      "label": "Feb 2026",
+      "start": "2026-02-01",
+      "end": "2026-02-28"
+     },
+     "b": {
+      "label": "Mar 2026",
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+     }
+    }
+   },
+   "contributions": {},
+   "mix_rate": null,
+   "num_den": null,
+   "bridge": null,
+   "roll_rates": [],
+   "concentration": {
+    "accounts_changed": 19,
+    "gross_movement": 339505936.75,
+    "accounts_for_50pct": 4,
+    "accounts_for_80pct": 6
+   },
+   "unusual": null,
+   "extra": {
+    "shares": {
+     "state_name": {
+      "total_outstanding": {
+       "Karnataka": 0.13665701558262355,
+       "Delhi": 0.05092253859527941,
+       "Rajasthan": 0.08072391350508168,
+       "Uttar Pradesh": 0.14341403864250227,
+       "West Bengal": 0.038862525185763136,
+       "Gujarat": 0.1321064086667374,
+       "Telangana": 0.07958085638044007,
+       "Tamil Nadu": 0.10520313990692136,
+       "Madhya Pradesh": 0.024478229629403155,
+       "Maharashtra": 0.208051333905248
+      },
+      "npa_outstanding": {
+       "Maharashtra": 0.1391326179291122,
+       "West Bengal": 0.03267965096836315,
+       "Telangana": 0.0,
+       "Madhya Pradesh": 0.0,
+       "Rajasthan": 0.0,
+       "Tamil Nadu": 0.315842886987388,
+       "Uttar Pradesh": 0.16767834661770425,
+       "Karnataka": 0.25764012798450064,
+       "Delhi": 0.0,
+       "Gujarat": 0.08702636951293172
+      }
+     },
+     "branch_code": {
+      "total_outstanding": {
+       "DEMO-WEST": 0.24346213839649372,
+       "DEMO-EAST": 0.27481689155152095,
+       "DEMO-SOUTH": 0.26265916421017105,
+       "DEMO-NORTH": 0.2190618058418143
+      },
+      "npa_outstanding": {
+       "DEMO-NORTH": 0.4329644628311615,
+       "DEMO-SOUTH": 0.14213010631698625,
+       "DEMO-WEST": 0.3656329403357574,
+       "DEMO-EAST": 0.059272490516094845
+      }
+     },
+     "ticket_size": {
+      "total_outstanding": {
+       "Up to 1.5 Cr": 0.08745061862034179,
+       "Above 2.5 Cr": 0.5871952588135465,
+       "1.5 - 2.5 Cr": 0.32535412256611174
+      },
+      "npa_outstanding": {
+       "1.5 - 2.5 Cr": 0.40895686378717166,
+       "Above 2.5 Cr": 0.4990909947283704,
+       "Up to 1.5 Cr": 0.091952141484458
+      }
+     }
+    }
+   },
+   "findings": [
+    {
+     "question_id": "q9_concentration",
+     "kind": "concentration",
+     "text": "Tamil Nadu holds 32% of NPA but only 11% of the book.",
+     "score": 0.6319192412413999,
+     "kpi": "npa_outstanding",
+     "dimension": "state_name",
+     "segment": "Tamil Nadu",
+     "drilldown": {
+      "metric": "gross_npa_ratio",
+      "dimensions": [
+       "branch_code"
+      ],
+      "filters": [
+       {
+        "dimension": "state_name",
+        "op": "eq",
+        "value": "Tamil Nadu"
+       }
+      ]
+     }
+    }
+   ],
+   "caveats": [
+    "Concentration is shown by segment and by number of accounts; no individual accounts are identified."
+   ],
+   "drilldowns": [
+    {
+     "metric": "npa_outstanding",
+     "dimensions": [
+      "state_name"
+     ]
+    },
+    {
+     "metric": "npa_outstanding",
+     "dimensions": [
+      "ticket_size"
+     ]
+    }
+   ],
+   "unavailable": []
+  },
+  {
+   "id": "q10_summary",
+   "theme": "Summary",
+   "question": "What should leadership look at this month?",
+   "answer": "1. Closed / exited: −₹20.97 Cr (5 accounts), 76% of the NPA outstanding movement. 2. Tamil Nadu holds 32% of NPA but only 11% of the book. 3. Gross NPA ratio fell 1.36 pp vs last month to 2.62% (largest monthly move in 13 months). 4. DEMO-WEST (branch) accounted for 59% of the change in Gross NPA ratio vs last month. 5. Above 2.5 Cr (ticket size) accounted for 95% of the change in Total outstanding vs last year.",
+   "rag": "none",
+   "kpi": null,
+   "comparisons": {},
+   "comparison_windows": {},
+   "contributions": {},
+   "mix_rate": null,
+   "num_den": null,
+   "bridge": null,
+   "roll_rates": [],
+   "concentration": null,
+   "unusual": null,
+   "extra": {},
+   "findings": [
+    {
+     "question_id": "q4_gnpa",
+     "kind": "bridge",
+     "text": "Closed / exited: −₹20.97 Cr (5 accounts), 76% of the NPA outstanding movement.",
+     "score": 0.7642237265161482,
+     "kpi": "gross_npa_ratio",
+     "dimension": null,
+     "segment": "Closed / exited",
+     "drilldown": null
+    },
+    {
+     "question_id": "q9_concentration",
+     "kind": "concentration",
+     "text": "Tamil Nadu holds 32% of NPA but only 11% of the book.",
+     "score": 0.6319192412413999,
+     "kpi": "npa_outstanding",
+     "dimension": "state_name",
+     "segment": "Tamil Nadu",
+     "drilldown": {
+      "metric": "gross_npa_ratio",
+      "dimensions": [
+       "branch_code"
+      ],
+      "filters": [
+       {
+        "dimension": "state_name",
+        "op": "eq",
+        "value": "Tamil Nadu"
+       }
+      ]
+     }
+    },
+    {
+     "question_id": "q4_gnpa",
+     "kind": "change",
+     "text": "Gross NPA ratio fell 1.36 pp vs last month to 2.62% (largest monthly move in 13 months).",
+     "score": 0.6,
+     "kpi": "gross_npa_ratio",
+     "dimension": null,
+     "segment": null,
+     "drilldown": null
+    },
+    {
+     "question_id": "q4_gnpa",
+     "kind": "contributor",
+     "text": "DEMO-WEST (branch) accounted for 59% of the change in Gross NPA ratio vs last month.",
+     "score": 0.5850243669743462,
+     "kpi": "gross_npa_ratio",
+     "dimension": "branch_code",
+     "segment": "DEMO-WEST",
+     "drilldown": {
+      "metric": "gross_npa_ratio",
+      "dimensions": [
+       "branch_code"
+      ]
+     }
+    },
+    {
+     "question_id": "q2_growth_sources",
+     "kind": "contributor",
+     "text": "Above 2.5 Cr (ticket size) accounted for 95% of the change in Total outstanding vs last year.",
+     "score": 0.4761191744877685,
+     "kpi": "total_outstanding",
+     "dimension": "ticket_size",
+     "segment": "Above 2.5 Cr",
+     "drilldown": {
+      "metric": "total_outstanding",
+      "dimensions": [
+       "ticket_size"
+      ]
+     }
+    }
+   ],
+   "caveats": [],
+   "drilldowns": [],
+   "unavailable": []
+  }
+ ],
+ "query_count": 36,
+ "bytes_scanned": 593175,
+ "elapsed_ms": 17550,
+ "notes": []
+}
