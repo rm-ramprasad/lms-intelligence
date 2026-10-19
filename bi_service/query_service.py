@@ -4,6 +4,7 @@ Independent of any UI or LLM. Logs only metadata (metric, dimension ids, status,
 timings, bytes scanned, row count) — never SQL literals or result values.
 """
 import logging
+from datetime import date
 from typing import Any
 
 from pydantic import ValidationError
@@ -13,7 +14,8 @@ from .config import ServiceConfig
 from .query_models import ColumnMeta, ErrorDetail, MetricMetadata, QueryResult, QuerySpec
 from .query_validator import QueryValidationError, validate
 from .semantic_loader import SemanticModel, load_semantic_model
-from .sql_compiler import CompiledQuery, UnsafeSQLError, compile_query
+from .sql_compiler import (SNAPSHOT_COL, TOTAL_FLAG_COL, CompiledQuery, UnsafeSQLError, compile_latest_date,
+                           compile_query)
 
 log = logging.getLogger("bi_service")
 
@@ -34,6 +36,16 @@ class QueryService:
     def _metric_meta(self, metric) -> MetricMetadata:
         return MetricMetadata(id=metric.id, name=metric.name, behavior=metric.behavior,
                               additivity=metric.additivity, format=metric.format, definition=metric.definition)
+
+    def latest_snapshot_date(self, view: str = "v_account_summary") -> date | None:
+        """Latest snapshot date in a governed view; anchors relative periods ("last quarter")."""
+        if self.executor is None:
+            raise RuntimeError("no executor configured")
+        out = self.executor.execute(compile_latest_date(self.model, view), max_rows=1)
+        if out.state != "SUCCEEDED" or not out.rows or out.rows[0][0] is None:
+            log.warning("latest snapshot lookup failed state=%s", out.state)
+            return None
+        return date.fromisoformat(out.rows[0][0])
 
     def compile(self, spec: QuerySpec | dict[str, Any]):
         """Validate and compile without executing. Returns (ValidatedQuery, CompiledQuery)."""
@@ -82,7 +94,22 @@ class QueryService:
         columns = [ColumnMeta(name=c, type=types.get(c, "varchar"), role="dimension") for c in cq.dimension_columns]
         columns += [ColumnMeta(name=c, type=types.get(c, "double"),
                                role="measure" if c == "value" else "component") for c in cq.value_columns]
-        rows = out.rows
+
+        # Split helper columns (snapshot date, total flag) and the total row out of the data rows.
+        names = [n for n, _ in out.columns]
+        snap_i = names.index(SNAPSHOT_COL) if SNAPSHOT_COL in names else None
+        tot_i = names.index(TOTAL_FLAG_COL) if TOTAL_FLAG_COL in names else None
+        width = len(cq.dimension_columns) + len(cq.value_columns)
+        snapshot_dates = [r[snap_i] for r in out.rows if snap_i is not None and r[snap_i] is not None]
+        base["snapshot_date"] = max(snapshot_dates) if snapshot_dates else None
+        total = None
+        rows = []
+        for r in out.rows:
+            if tot_i is not None and r[tot_i]:
+                total = r[len(cq.dimension_columns):width]
+            else:
+                rows.append(r[:width])
+        base["total"] = total
         truncated = len(rows) > vq.limit
         rows = rows[: vq.limit]
         warnings = []

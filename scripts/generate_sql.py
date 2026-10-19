@@ -82,12 +82,72 @@ def gen_views(cat: dict) -> str:
         cols = resolved_columns(t)
         keep = view_columns(t)
         excluded = len(cols) - len(keep)
-        select = ",\n".join(
-            f"  {typed_expr(c, raw_ref(t, c, cols), defaults)} AS \"{c['name']}\"" for c in keep
-        )
+        cur = t.get("curated")
+        if cur:   # final view reads the curated Parquet table; typing happened in the staging view (create_curated.sql)
+            select = ",\n".join(f"  \"{c['name']}\"" for c in keep)
+            out.append(
+                f"\n-- {len(keep)} of {len(cols)} columns ({excluded} excluded as PII); reads curated Parquet\n"
+                f"CREATE OR REPLACE VIEW {db}.v_{tname} AS\nSELECT\n{select}\nFROM {db}.{cur['table']};\n"
+            )
+            continue
         out.append(
             f"\n-- {len(keep)} of {len(cols)} columns ({excluded} excluded as PII)\n"
-            f"CREATE OR REPLACE VIEW {db}.v_{tname} AS\nSELECT\n{select}\nFROM {db}.raw_{tname};\n"
+            f"CREATE OR REPLACE VIEW {db}.v_{tname} AS\n{typed_select(t, defaults)}\nFROM {db}.raw_{tname};\n"
+        )
+    return "".join(out)
+
+
+def typed_select(t: dict, defaults: dict) -> str:
+    cols = resolved_columns(t)
+    return "SELECT\n" + ",\n".join(
+        f"  {typed_expr(c, raw_ref(t, c, cols), defaults)} AS \"{c['name']}\"" for c in view_columns(t))
+
+
+def gen_curated(cat: dict) -> str:
+    """Staging view (typed over raw) + one-time CTAS into partitioned Parquet. Run in the ETL workgroup."""
+    db, defaults = cat["aws"]["database"], cat["defaults"]
+    out = [HEADER, "-- One-time conversion to Parquet. Run with:\n"
+                   "--   verify_athena.py --execute sql/create_curated.sql --workgroup <etl_workgroup> --allow-ctas\n"]
+    for tname, t in cat["tables"].items():
+        cur = t.get("curated")
+        if not cur:
+            continue
+        keep = [c["name"] for c in view_columns(t)]
+        part = cur["partition_by"]
+        ordered = [n for n in keep if n != part] + [part]   # partition column must be last
+        out.append(
+            f"\n-- {tname}: staging view (same typing as the raw-based view)\n"
+            f"CREATE OR REPLACE VIEW {db}.{cur['staging_view']} AS\n{typed_select(t, defaults)}\nFROM {db}.raw_{tname};\n"
+            f"\n-- {tname}: Parquet table, partitioned by {part}\n"
+            f"CREATE TABLE {db}.{cur['table']}\n"
+            f"WITH (format = '{cur['format']}', write_compression = '{cur['compression']}',\n"
+            f"      external_location = '{cur['location']}', partitioned_by = ARRAY['{part}'])\n"
+            f"AS SELECT\n" + ",\n".join(f"  \"{n}\"" for n in ordered) + f"\nFROM {db}.{cur['staging_view']};\n"
+        )
+    return "".join(out)
+
+
+def gen_reconcile(cat: dict) -> str:
+    """Per-date aggregate comparison of staging (CSV) vs curated (Parquet). Aggregates only."""
+    db = cat["aws"]["database"]
+    out = [HEADER, "-- Reconciliation: every date must match exactly (row count, accounts, measure sums).\n"]
+    for tname, t in cat["tables"].items():
+        cur = t.get("curated")
+        if not cur:
+            continue
+        part = cur["partition_by"]
+        ms = cur["reconcile_measures"]
+        aggs = ", ".join([f"count(*) AS n", "count(DISTINCT \"account_number\") AS a"] +
+                         [f"sum(\"{m}\") AS m{i}" for i, m in enumerate(ms)])
+        diffs = " OR ".join([f"s.{k} IS DISTINCT FROM c.{k}" for k in ["n", "a"] + [f"m{i}" for i in range(len(ms))]])
+        out.append(
+            f"\n-- check: {tname}.reconcile ({', '.join(ms)})\n"
+            f"WITH s AS (SELECT \"{part}\" AS d, {aggs} FROM {db}.{cur['staging_view']} GROUP BY 1),\n"
+            f"c AS (SELECT \"{part}\" AS d, {aggs} FROM {db}.{cur['table']} GROUP BY 1)\n"
+            f"SELECT count(*) AS dates_compared,\n"
+            f"  count_if(s.d IS NULL OR c.d IS NULL OR {diffs}) AS mismatched_dates,\n"
+            f"  sum(s.n) AS staging_rows, sum(c.n) AS curated_rows, sum(s.m0) AS staging_{ms[0]}, sum(c.m0) AS curated_{ms[0]}\n"
+            f"FROM s FULL OUTER JOIN c ON s.d = c.d;\n"
         )
     return "".join(out)
 
@@ -182,6 +242,8 @@ def outputs(cat: dict) -> dict:
         SQL_DIR / "create_raw_tables.sql": gen_raw(cat),
         SQL_DIR / "create_typed_views.sql": gen_views(cat),
         SQL_DIR / "validate_data.sql": gen_validation(cat),
+        SQL_DIR / "create_curated.sql": gen_curated(cat),
+        SQL_DIR / "reconcile_curated.sql": gen_reconcile(cat),
     }
 
 

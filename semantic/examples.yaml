@@ -8,6 +8,10 @@ examples:
 
   - id: q1_outstanding_by_state
     question: What is total outstanding by state as of the latest snapshot?
+    paraphrases:
+      - "Outstanding by state"
+      - "state-wise loan book latest"
+      - "What is the portfolio by region as of now?"
     spec: {metric: total_outstanding, dimensions: [state_name], sort: [{by: value, direction: desc}]}
     reference_sql: |
       SELECT state_name, SUM(total_os) AS value
@@ -18,6 +22,10 @@ examples:
 
   - id: q2_active_accounts_by_loan_group
     question: How many active accounts are there in each loan group as of March 2026?
+    paraphrases:
+      - "Active accounts by loan group for March 2026"
+      - "live loans per loan group Mar-26"
+      - "How many active loans in each group in Mar 2026?"
     spec: {metric: active_account_count, dimensions: [loan_group], period: {kind: month, month: "2026-03"}}
     reference_sql: |
       SELECT loan_group, COUNT(DISTINCT account_number) AS value
@@ -30,6 +38,10 @@ examples:
 
   - id: q3_monthly_disbursement_fy2026
     question: What is the monthly disbursement trend for FY 2026?
+    paraphrases:
+      - "Monthly disbursement FY26"
+      - "disbursements by month for FY 2025-26"
+      - "Show disbursal trend month-wise in FY 2026"
     spec: {metric: disbursement_amount, dimensions: [month], period: {kind: fiscal_year, year: 2026}}
     reference_sql: |
       SELECT date_trunc('month', transaction_date) AS month, SUM(disbursement_amount) AS value
@@ -40,6 +52,10 @@ examples:
 
   - id: q4_par30_ratio_by_branch
     question: What is the PAR 30+ ratio by branch as of the latest snapshot?
+    paraphrases:
+      - "PAR 30 ratio by branch"
+      - "branch-wise portfolio at risk latest"
+      - "What is the PAR 30+ % for each branch?"
     spec: {metric: par_30_plus_ratio, dimensions: [branch_code]}
     reference_sql: |
       SELECT branch_code,
@@ -52,6 +68,10 @@ examples:
 
   - id: q5_gross_npa_ratio_by_product
     question: What is the gross NPA ratio by product as of the latest snapshot?
+    paraphrases:
+      - "GNPA by product"
+      - "gross NPA % product-wise latest"
+      - "What is the NPA ratio for each product?"
     spec: {metric: gross_npa_ratio, dimensions: [product_code]}
     reference_sql: |
       SELECT product_code,
@@ -63,6 +83,10 @@ examples:
 
   - id: q6_quarterly_outstanding_fy2026
     question: What was total outstanding at the end of each quarter of FY 2026?
+    paraphrases:
+      - "Quarterly outstanding FY26"
+      - "AUM by quarter for FY 2025-26"
+      - "loan book at each quarter end in FY 2026"
     spec: {metric: total_outstanding, dimensions: [quarter], period: {kind: fiscal_year, year: 2026}}
     reference_sql: |
       SELECT date_trunc('quarter', transaction_date) AS quarter, SUM(total_os) AS value
@@ -76,6 +100,10 @@ examples:
 
   - id: q7_collection_efficiency_monthly_fy2026
     question: What was the monthly collection efficiency in FY 2026?
+    paraphrases:
+      - "Collection efficiency by month FY26"
+      - "monthly CE for FY 2025-26"
+      - "Show collection efficiency trend month-wise in FY 2026"
     spec: {metric: collection_efficiency, dimensions: [month], period: {kind: fiscal_year, year: 2026}}
     reference_sql: |
       SELECT date_trunc('month', transaction_date) AS month,

@@ -122,11 +122,20 @@ def print_results(athena, qid: str) -> None:
             print("    " + " | ".join(r))
 
 
-def execute(session, cat: dict, path: Path, assume_yes: bool) -> bool:
+CTAS = re.compile(r"^\s*CREATE\s+TABLE\s+[\w.]+\s+WITH\s*\(.*?\)\s*AS\s+SELECT\b", re.IGNORECASE | re.DOTALL)
+
+
+def _allowed(stmt: str, allow_ctas: bool) -> bool:
+    if allow_ctas and CTAS.match(stmt):   # CREATE TABLE ... WITH (...) AS SELECT only; no other writes
+        return not re.search(r"\b(INSERT|UPDATE|DELETE|MERGE|UNLOAD|DROP|ALTER)\b", stmt, re.IGNORECASE)
+    return bool(ALLOWED.match(stmt)) and not FORBIDDEN.search(stmt)
+
+
+def execute(session, cat: dict, path: Path, assume_yes: bool, allow_ctas: bool = False) -> bool:
     aws = cat["aws"]
     stmts = split_statements(path.read_text(encoding="utf-8"))
     for label, s in stmts:
-        if not ALLOWED.match(s) or FORBIDDEN.search(s):
+        if not _allowed(s, allow_ctas):
             print(f"REFUSED (statement type not allowed): {label}")
             return False
     print(f"{path} -> {len(stmts)} statement(s) in workgroup {aws['workgroup']}:")
@@ -161,10 +170,14 @@ def main() -> int:
     ap.add_argument("--profile", default=aws["profile"])
     ap.add_argument("--execute", type=Path, metavar="SQL_FILE", help="run statements in this file after approval")
     ap.add_argument("--yes", action="store_true", help="skip the interactive prompt (explicit approval)")
+    ap.add_argument("--workgroup", help="override the workgroup (e.g. the ETL workgroup for CTAS)")
+    ap.add_argument("--allow-ctas", action="store_true", help="permit CREATE TABLE ... WITH (...) AS SELECT")
     args = ap.parse_args()
+    if args.workgroup:
+        cat["aws"]["workgroup"] = args.workgroup
 
     session = boto3.Session(profile_name=args.profile, region_name=aws["region"])
-    ok = execute(session, cat, args.execute, args.yes) if args.execute else verify(session, cat)
+    ok = execute(session, cat, args.execute, args.yes, args.allow_ctas) if args.execute else verify(session, cat)
     return 0 if ok else 1
 
 

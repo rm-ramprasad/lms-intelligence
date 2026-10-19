@@ -31,6 +31,21 @@ aws:
   database: analytics_poc
   bytes_scanned_cutoff: 1073741824   # 1 GiB per query
 
+# Milestone 4 (approved 2026-10-19): Nova Micro via APAC cross-region profile; demo/mock data only.
+bedrock:
+  enabled: true
+  region: ap-south-1
+  model_id: apac.amazon.nova-micro-v1:0
+  model_label: Amazon Nova Micro
+  timeout_seconds: 10
+  max_tokens: 400
+  temperature: 0
+  # list-price estimate (USD per 1K tokens) for cost reporting only; confirm against the bill
+  price_per_1k_input: 0.000035
+  price_per_1k_output: 0.00014
+  guardrail_id: ch7aqg7t3js4  # analytics-poc-guardrail (infrastructure/config/guardrail.json), created 2026-10-19
+  guardrail_version: "1"      # published version (immutable); DRAFT was used for benchmark runs 1-2
+
 defaults:
   date_formats: ["%Y-%m-%d"]   # profiling: 100% of date values in all files match yyyy-mm-dd
   true_values: ["Y", "YES", "TRUE", "T", "1"]
@@ -47,6 +62,15 @@ tables:
     query_access: governed   # the only view the query service may read in V0.1
     snapshot_date_column: transaction_date
     snapshot_cadence: month_end   # APPROVED 2026-10-18
+    curated:                      # APPROVED 2026-10-19: one-time Parquet conversion (incremental later)
+      table: account_summary_curated
+      staging_view: v_account_summary_staging
+      location: s3://analytics-poc-curated-791896160716-ap-south-1/account_summary/
+      format: PARQUET
+      compression: ZSTD
+      partition_by: transaction_date   # 48 month-ends (2022-04-30..2026-03-31) < 100-partition CTAS limit
+      etl_workgroup: analytics_poc_etl_wg
+      reconcile_measures: [total_os, disbursement_amount, demand_amount, repayment_amount, par_over_90, sanctioned_amount]
     grain_candidate: [account_number, transaction_date]   # UNVERIFIED
     columns:
       - {src: TransactionDate, type: date, note: "month-end snapshot date (approved 2026-10-18)"}

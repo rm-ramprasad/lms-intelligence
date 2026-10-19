@@ -16,6 +16,27 @@
 - V0.1 is single-view (`v_account_summary`). Relationships stay `enabled: false` until approved.
 - `pytest -m live` hits Athena. Run it only with approval.
 
+## Chat interface (`bi_chat/`, `app/`)
+- **The deterministic interpreter** (`interpreter.py`, `matcher.py`) uses no LLM. It works from `semantic/glossary.yaml`,
+  `value_aliases.yaml`, `dimension_values.yaml` and `language.yaml`. The eval set must stay at 100%. LLM use is confined to the
+  Milestone 4 AI modules (see below), and a test enforces this.
+- **Layering:** `app → bi_chat → bi_service`. Never import upward. `bi_chat` must not import streamlit.
+- **New vocabulary** goes into the YAML catalog (new KPI synonyms need owner approval). Then run the eval set
+  (`tests/eval/questions.yaml`); it must stay at 100%.
+- **Never auto-run** a "Did you mean" suggestion. The user must click it.
+- **Refreshing values:** `scripts/refresh_values.py` runs one aggregate Athena query, so it needs approval.
+
+## AI interpretation (Milestone 4: Bedrock Nova Micro, APAC cross-region; demo data only)
+- Bedrock may be called only from `bi_chat/llm_client.py`, through `llm_interpreter.py` / `llm_narrator.py`.
+  `bi_service` never calls an LLM. The model only returns tool calls (a QuerySpec, a clarification limited to approved KPI
+  ids, or a refusal). It never writes SQL and never computes numbers.
+- **PII pre-filter:** the deterministic refusal check runs before any Bedrock call. Questions with identifiers or PII are
+  never sent. Prompts contain catalog text, the question, the previous spec and the anchor date only, never rows.
+- **AI summary:** every number in it must appear in the aggregated input. Otherwise the template answer is shown.
+- **Guardrail:** `bedrock.guardrail_id` in tables.yaml. It's on for all AI calls when set.
+- **Live calls:** `scripts/benchmark_interpreters.py --modes ai|hybrid` and the app's AI mode call Bedrock. Run the
+  benchmark only with approval.
+
 ## Hard rules
 - **Data access:** never read, download or print customer records or row-level data. The only approved data access is `scripts/profile_s3.py`: it runs in memory, skips PII columns, and outputs aggregates only. Validation output must stay aggregate-only.
 - **Column quality:** columns tagged `quality: placeholder|all_zero|constant` must not be used in metrics or as dimensions.

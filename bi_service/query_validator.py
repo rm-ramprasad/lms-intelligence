@@ -56,6 +56,7 @@ class ValidatedQuery:
     period: ResolvedPeriod
     sort: tuple[ResolvedSort, ...]
     limit: int
+    include_total: bool = False
 
 
 def _check_string(v, field: str, errors: list) -> str | None:
@@ -176,6 +177,11 @@ def validate(spec: QuerySpec, model: SemanticModel, *, default_limit: int, max_l
     if limit > max_limit:
         errors.append(("limit_exceeded", f"limit may not exceed {max_limit}", "limit"))
 
+    include_total = spec.include_total and bool(dims)
+    if include_total and metric.behavior == "snapshot" and any(d.kind == "time" for d in dims):
+        errors.append(("total_not_meaningful",
+                       f"{metric.id} is a month-end balance; a total across time periods is not meaningful", "include_total"))
+
     if errors:
         raise QueryValidationError(errors)
-    return ValidatedQuery(metric, tuple(dims), tuple(filters), period, tuple(sorts), limit)
+    return ValidatedQuery(metric, tuple(dims), tuple(filters), period, tuple(sorts), limit, include_total)

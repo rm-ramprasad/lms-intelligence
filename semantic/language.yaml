@@ -1,0 +1,52 @@
+# Language rules for the deterministic interpreter (governed like the glossary).
+# Period phrase PATTERNS are implemented in bi_chat/period_parser.py; this file holds the vocabulary.
+# Relative periods are anchored to the latest snapshot date L, never to today's date.
+# Approvals 2026-10-19 (user): D1 quarters are fiscal; D2 YTD and "last year" are fiscal; D5 trend default 12 months.
+
+version: 1
+
+periods:
+  # "last month" = the latest month-end in the data (snapshots are month-end, so it is the latest complete month)
+  latest: [latest, now, today, as of now, as on date, as of today, this month, current month, last month,
+           latest month, most recent, recent, so far]
+  this_quarter: [this quarter, current quarter, this qtr, qtd, quarter to date]
+  last_quarter: [last quarter, previous quarter, last qtr, previous qtr, prior quarter]
+  this_fiscal_year: [this year, this fiscal year, this financial year, current year, current fiscal year, this fy,
+                     current fy, ytd, fytd, year to date]
+  last_fiscal_year: [last year, last fiscal year, last financial year, previous year, previous fiscal year, last fy,
+                     previous fy, prior year]
+  last_n_months: [last, past, previous, trailing]   # followed by N and "months"
+  range_start: [between, from]
+  range_join: [and, to, till, until, through]
+  trend_default_months: 12
+
+months: {jan: 1, january: 1, feb: 2, february: 2, mar: 3, march: 3, apr: 4, april: 4, may: 5, jun: 6, june: 6,
+         jul: 7, july: 7, aug: 8, august: 8, sep: 9, sept: 9, september: 9, oct: 10, october: 10,
+         nov: 11, november: 11, dec: 12, december: 12}
+bare_month_ignore: [may]   # "may" alone is a verb; needs a year
+
+top_n:
+  desc: [top, highest, best, largest, biggest, max, maximum, most]
+  asc: [bottom, lowest, worst, smallest, least, min, minimum]
+  default_n: 5
+
+negation: [excluding, except, without, excl, exclude, not, other than, apart from]
+also: [also, additionally, plus, as well as]
+followup_cues: [now, also, and, same, what about, how about, instead, only, just, then, show, break, split, compare]
+clear_filters: [remove filter, remove filters, clear filter, clear filters, no filter, no filters, all states,
+                all branches, all products, overall, everything]
+
+refuse:
+  identifier_words: [account number, account no, a/c no, customer id, customer name, customer, customers, borrower, borrowers,
+                     name of, names, pan number, pan card, pan no, aadhaar, aadhar, phone, mobile, email, address, contact, who]
+  out_of_scope_words: [why, reason, reasons, explain, forecast, predict, prediction, projection, project, will be,
+                       next month, next quarter, next year, budget, target]
+
+stop_words: [what, whats, s, is, are, was, were, be, been, the, a, an, of, for, in, on, at, as, by, per, across, to,
+             show, me, give, get, tell, list, display, find, please, pls, kindly, can, you, i, we, our, my, us,
+             how, much, with, and, or, value, values, amount, amounts, figure, figures, number, numbers, data,
+             report, overall, total, wise, split, break, down, breakdown, each, every, all, its, it, their,
+             rs, inr, cr, crore, crores, lakh, lakhs, there, do, does, did, have, has, had, see, view, look,
+             level, levels, about, current, vs, versus, wise, between, compared, compare, distribution, mix,
+             only, just, now, then, same, instead, also, again, kpi, metric, ratio, details, summary, under,
+             within, from, till, until, through, up, upto]

@@ -1,0 +1,63 @@
+{
+  "name": "analytics-poc-guardrail",
+  "description": "Demo guardrail for the portfolio Q&A assistant: blocks customer-level, credit-decision and advice requests, PII and prompt attacks.",
+  "topicPolicyConfig": {
+    "topicsConfig": [
+      {
+        "name": "IndividualCustomerOrAccount",
+        "definition": "Requests for information about a specific identified customer, borrower or loan account, including their balances, status, contact details or identity documents.",
+        "examples": [
+          "What is the outstanding for account AB12345678?",
+          "Show me the loan details of Ramesh Kumar",
+          "Which customers have defaulted this month?"
+        ],
+        "type": "DENY"
+      },
+      {
+        "name": "CreditDecisions",
+        "definition": "Requests to approve, reject, price or assess creditworthiness for a specific loan application or borrower.",
+        "examples": [
+          "Should we approve this borrower's loan?",
+          "What interest rate should we give this customer?"
+        ],
+        "type": "DENY"
+      },
+      {
+        "name": "InvestmentOrFinancialAdvice",
+        "definition": "Requests for personal investment, trading or financial planning advice.",
+        "examples": [
+          "Should I buy NBFC shares?",
+          "Where should I invest my savings?"
+        ],
+        "type": "DENY"
+      }
+    ]
+  },
+  "contentPolicyConfig": {
+    "filtersConfig": [
+      { "type": "PROMPT_ATTACK", "inputStrength": "HIGH", "outputStrength": "NONE" },
+      { "type": "HATE", "inputStrength": "MEDIUM", "outputStrength": "MEDIUM" },
+      { "type": "INSULTS", "inputStrength": "MEDIUM", "outputStrength": "MEDIUM" },
+      { "type": "SEXUAL", "inputStrength": "MEDIUM", "outputStrength": "MEDIUM" },
+      { "type": "VIOLENCE", "inputStrength": "MEDIUM", "outputStrength": "MEDIUM" },
+      { "type": "MISCONDUCT", "inputStrength": "MEDIUM", "outputStrength": "MEDIUM" }
+    ]
+  },
+  "sensitiveInformationPolicyConfig": {
+    "piiEntitiesConfig": [
+      { "type": "EMAIL", "action": "BLOCK" },
+      { "type": "PHONE", "action": "BLOCK" },
+      { "type": "CREDIT_DEBIT_CARD_NUMBER", "action": "BLOCK" }
+    ],
+    "regexesConfig": [
+      { "name": "IndianPAN", "description": "PAN number", "pattern": "\\b[A-Za-z]{5}[0-9]{4}[A-Za-z]\\b", "action": "BLOCK" },
+      { "name": "Aadhaar", "description": "12-digit Aadhaar", "pattern": "\\b[2-9][0-9]{3}\\s?[0-9]{4}\\s?[0-9]{4}\\b", "action": "BLOCK" },
+      { "name": "LoanOrCustomerId", "description": "Account/customer id format in this dataset", "pattern": "\\b[A-Za-z]{2}[0-9]{6,}\\b", "action": "BLOCK" }
+    ]
+  },
+  "wordPolicyConfig": {
+    "managedWordListsConfig": [ { "type": "PROFANITY" } ]
+  },
+  "blockedInputMessaging": "I can only help with portfolio-level KPI questions. This request was blocked by the safety guardrail.",
+  "blockedOutputsMessaging": "The response was blocked by the safety guardrail."
+}

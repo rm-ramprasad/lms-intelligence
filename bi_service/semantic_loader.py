@@ -99,6 +99,7 @@ class Example:
     question: str
     spec: dict
     reference_sql: str
+    paraphrases: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -247,5 +248,6 @@ def load_semantic_model(semantic_dir: Path = SEMANTIC_DIR) -> SemanticModel:
     rels = _read(semantic_dir / "relationships.yaml").get("relationships", [])
     if any(r.get("enabled") for r in rels):
         raise SemanticConfigError("relationships are not supported in V0.1; all must be enabled: false")
-    examples = {e["id"]: Example(**e) for e in _read(semantic_dir / "examples.yaml").get("examples", [])}
+    examples = {e["id"]: Example(**{**e, "paraphrases": tuple(e.get("paraphrases", ()))})
+                for e in _read(semantic_dir / "examples.yaml").get("examples", [])}
     return SemanticModel(tables["aws"]["database"], views, metrics, dims, examples)

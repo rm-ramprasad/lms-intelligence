@@ -16,7 +16,8 @@
     {
       "Sid": "GlueCatalogReadOnly",
       "Effect": "Allow",
-      "Action": ["glue:GetDatabase", "glue:GetTable", "glue:GetTables", "glue:GetPartition", "glue:GetPartitions"],
+      "Action": ["glue:GetDatabase", "glue:GetTable", "glue:GetTables", "glue:GetPartition", "glue:GetPartitions",
+                 "glue:BatchGetPartition"],
       "Resource": [
         "arn:aws:glue:ap-south-1:791896160716:catalog",
         "arn:aws:glue:ap-south-1:791896160716:database/analytics_poc",
@@ -24,17 +25,17 @@
       ]
     },
     {
-      "Sid": "SourceAccountSummaryReadOnly",
+      "Sid": "CuratedAccountSummaryReadOnly",
       "Effect": "Allow",
       "Action": ["s3:GetObject"],
-      "Resource": "arn:aws:s3:::opta-s3-demo/nbfc-base-data/AccountSummary/*"
+      "Resource": "arn:aws:s3:::analytics-poc-curated-791896160716-ap-south-1/account_summary/*"
     },
     {
-      "Sid": "SourceListAccountSummaryPrefix",
+      "Sid": "CuratedListAccountSummaryPrefix",
       "Effect": "Allow",
       "Action": ["s3:ListBucket", "s3:GetBucketLocation"],
-      "Resource": "arn:aws:s3:::opta-s3-demo",
-      "Condition": { "StringLike": { "s3:prefix": ["nbfc-base-data/AccountSummary/*"] } }
+      "Resource": "arn:aws:s3:::analytics-poc-curated-791896160716-ap-south-1",
+      "Condition": { "StringLike": { "s3:prefix": ["account_summary/*", "account_summary/"] } }
     },
     {
       "Sid": "AthenaResultsReadWrite",
@@ -46,11 +47,33 @@
       ]
     },
     {
+      "Sid": "BedrockInvokeNovaMicroOnly",
+      "Effect": "Allow",
+      "Action": ["bedrock:InvokeModel"],
+      "Resource": [
+        "arn:aws:bedrock:ap-south-1:791896160716:inference-profile/apac.amazon.nova-micro-v1:0",
+        "arn:aws:bedrock:ap-south-1::foundation-model/amazon.nova-micro-v1:0",
+        "arn:aws:bedrock:ap-southeast-1::foundation-model/amazon.nova-micro-v1:0",
+        "arn:aws:bedrock:ap-southeast-2::foundation-model/amazon.nova-micro-v1:0",
+        "arn:aws:bedrock:ap-northeast-1::foundation-model/amazon.nova-micro-v1:0",
+        "arn:aws:bedrock:ap-northeast-2::foundation-model/amazon.nova-micro-v1:0",
+        "arn:aws:bedrock:ap-northeast-3::foundation-model/amazon.nova-micro-v1:0"
+      ]
+    },
+    {
+      "Sid": "BedrockApplyProjectGuardrail",
+      "Effect": "Allow",
+      "Action": ["bedrock:ApplyGuardrail"],
+      "Resource": "arn:aws:bedrock:ap-south-1:791896160716:guardrail/*"
+    },
+    {
       "Sid": "DenyAllWritesAndDDL",
       "Effect": "Deny",
       "Action": [
         "glue:Create*", "glue:Update*", "glue:Delete*", "glue:BatchDelete*", "glue:StartCrawler",
-        "s3:DeleteObject", "s3:PutBucketPolicy", "bedrock:*", "rds:*"
+        "s3:DeleteObject", "s3:PutBucketPolicy", "rds:*",
+        "bedrock:Create*", "bedrock:Delete*", "bedrock:Put*", "bedrock:Update*", "bedrock:InvokeAgent",
+        "bedrock:InvokeModelWithResponseStream"
       ],
       "Resource": "*"
     },

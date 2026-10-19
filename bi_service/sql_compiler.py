@@ -19,6 +19,8 @@ from .semantic_loader import Condition, Dimension, Metric, SemanticModel
 
 IDENT = re.compile(r"^[a-z][a-z0-9_]{0,62}$")
 SNAPSHOT_CTE = "snapshot_dates"
+SNAPSHOT_COL = "snapshot_date"     # MAX(snapshot date) per row; stripped from rows into QueryResult.snapshot_date
+TOTAL_FLAG_COL = "is_total"        # grouping() flag; total row is moved into QueryResult.total
 FORBIDDEN = re.compile(
     r"\b(INSERT|UPDATE|DELETE|MERGE|DROP|CREATE|ALTER|TRUNCATE|GRANT|REVOKE|UNLOAD|CALL|EXECUTE|PREPARE|DEALLOCATE|USE|SET|MSCK|VACUUM|OPTIMIZE)\b",
     re.IGNORECASE,
@@ -107,17 +109,26 @@ def _filter_sql(f: ResolvedFilter) -> str:
     return f"{col} {'IN' if f.op == 'in' else 'NOT IN'} ({vals})"
 
 
+def compile_latest_date(model: SemanticModel, view_name: str) -> str:
+    """Fixed template: the latest snapshot date of a governed view (anchors relative periods)."""
+    view = model.views[view_name]
+    sql = f"SELECT MAX({ident(view.snapshot_date_column)}) AS \"{SNAPSHOT_COL}\" FROM {view.qualified}"
+    assert_safe_sql(sql, {v.qualified for v in model.views.values()})
+    return sql
+
+
 def compile_query(q: ValidatedQuery, model: SemanticModel) -> CompiledQuery:
     metric = q.metric
     view = model.views[metric.view]
     relation = view.qualified
     date_col = ident(view.snapshot_date_column)
 
-    select, group, dim_cols = [], [], []
+    select, group, dim_cols, dim_exprs = [], [], [], []
     for i, d in enumerate(q.dimensions, 1):
         select.append(f"{_dim_expr(d)} AS {ident(d.id)}")
         group.append(str(i))
         dim_cols.append(d.id)
+        dim_exprs.append(_dim_expr(d))
 
     if metric.measure.aggregation == "ratio":
         num, den = model.metrics[metric.measure.numerator], model.metrics[metric.measure.denominator]
@@ -130,6 +141,9 @@ def compile_query(q: ValidatedQuery, model: SemanticModel) -> CompiledQuery:
     else:
         select.append(f"{_aggregate(metric)} AS \"value\"")
         value_cols = ("value",)
+    select.append(f"MAX({date_col}) AS \"{SNAPSHOT_COL}\"")
+    if q.include_total:
+        select.append(f"grouping({', '.join(dim_exprs)}) AS \"{TOTAL_FLAG_COL}\"")
 
     bounds = []
     if q.period.start is not None:
@@ -150,22 +164,24 @@ def compile_query(q: ValidatedQuery, model: SemanticModel) -> CompiledQuery:
         where += bounds
     where += [_filter_sql(f) for f in q.filters]
 
-    order = []
+    order = [f"\"{TOTAL_FLAG_COL}\" DESC"] if q.include_total else []   # total row first, never cut by LIMIT
     for s in q.sort:
         target = '"value"' if s.key == "value" else ident(s.key)
         order.append(f"{target} {s.direction.upper()}")
-    if not order:
+    if not q.sort:
         for d in q.dimensions:  # default: business order of the dimensions
             order.append(f"MIN({ident(d.sort_column)}) ASC" if d.sort_column else f"{ident(d.id)} ASC")
 
     sql = cte + "SELECT\n  " + ",\n  ".join(select) + f"\nFROM {relation}"
     if where:
         sql += "\nWHERE " + "\n  AND ".join(where)
-    if group:
+    if q.include_total:
+        sql += f"\nGROUP BY GROUPING SETS (({', '.join(dim_exprs)}), ())"
+    elif group:
         sql += "\nGROUP BY " + ", ".join(group)
     if order:
         sql += "\nORDER BY " + ", ".join(order)
-    fetch = q.limit + 1
+    fetch = q.limit + 1 + (1 if q.include_total else 0)
     sql += f"\nLIMIT {int(fetch)}"
 
     allowed = {v.qualified for v in model.views.values()} | {SNAPSHOT_CTE}

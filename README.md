@@ -102,5 +102,33 @@ r = svc.run({"metric": "gross_npa_ratio", "dimensions": ["product_code"]})
 - **Semantic definitions** are in `semantic/metrics.yaml`, `dimensions.yaml`, `relationships.yaml` (all disabled) and `examples.yaml`.
   The plan and decisions are in [docs/milestones/milestone_2_plan.md](docs/milestones/milestone_2_plan.md).
 
+## Milestone 3: deterministic chat interface (`bi_chat/`, `app/`)
+
+Business users ask questions in plain language. A **deterministic** interpreter (no LLM) matches them against the
+governed catalog and runs them through `bi_service`.
+
+```powershell
+.\.venv\Scripts\streamlit.exe run app\streamlit_app.py           # http://localhost:8501
+$env:BI_ADMIN = "1"; .\.venv\Scripts\streamlit.exe run app\streamlit_app.py   # admin: "Show generated SQL" toggle
+.\.venv\Scripts\python.exe scripts\build_catalog_doc.py          # regenerate docs/catalog.md
+.\.venv\Scripts\python.exe scripts\refresh_values.py             # refresh dimension values (one aggregate query)
+```
+
+- **Catalog files:**
+  - `semantic/glossary.yaml`: KPI definitions, formulas, synonyms and owners
+  - `value_aliases.yaml`: aliases such as "TN" → Tamil Nadu
+  - `dimension_values.yaml`: generated value lists
+  - `language.yaml`: time phrases, stop words, refusal words
+
+  All are cross-validated at load time; any phrase that maps to two things is an error. The same files produce
+  the app's Catalog page and [docs/catalog.md](docs/catalog.md).
+- **Interpreter rules:**
+  - A query runs only when exactly one KPI matched and every word was recognised.
+  - Otherwise the user is asked to clarify with clickable options, or offered "Did you mean" suggestions from `examples.yaml`.
+  - Customer or account lookups and why/forecast questions are refused.
+- **Pages:** Ask (chat), KPI catalog, Guided builder. The audit log goes to `logs/audit.jsonl`; it never holds result rows,
+  and long numbers in questions are masked.
+- **Growing coverage:** review the `unrecognised` words in the audit log and add approved synonyms to the YAML.
+
 ## Required approvals before deploy
 See [infrastructure/setup_athena.md](infrastructure/setup_athena.md) and the open decisions in the project hand-off.

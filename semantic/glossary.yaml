@@ -1,0 +1,209 @@
+# Business glossary: KPI definitions and synonyms for the deterministic interpreter and the
+# Catalog page. Linked to semantic/metrics.yaml by metric_id (definitions are not duplicated
+# there; units come from metrics.yaml `format`).
+#
+# synonyms        phrases that select this KPI (case-insensitive, matched longest-first)
+# weak_synonyms   generic phrases ("how many") used ONLY when no other KPI phrase matched
+# status          approved | pending_approval (pending entries are recognised but refused)
+# Approvals 2026-10-19 (user): D4 outstanding = loan book = book size = portfolio = AUM = POS.
+
+version: 1
+
+kpis:
+
+  - metric_id: total_outstanding
+    name: Total outstanding
+    short: Amount outstanding across all loan accounts at month-end.
+    long: Sum of TotalOS across accounts at a month-end snapshot. Also called loan book, portfolio, AUM or POS.
+    formula: "Σ TotalOS"
+    synonyms: [outstanding, total outstanding, total os, os, loan book, book size, book, portfolio, aum, pos,
+               principal outstanding, portfolio outstanding]
+    behavior_note: Month-end balance. Compare months; never add across months.
+    related: [npa_outstanding, par_30_plus_amount, account_count]
+    owner: Finance
+    status: approved
+
+  - metric_id: account_count
+    name: Number of accounts
+    short: Loan accounts in the month-end book (any status).
+    long: Distinct loan accounts present in a month-end snapshot, active or closed.
+    formula: "COUNT DISTINCT account"
+    synonyms: [accounts, number of accounts, account count, no of accounts, loans, number of loans, loan count, total accounts]
+    weak_synonyms: [how many, number of, count of, count, no of]
+    behavior_note: Month-end count. Compare months; never add across months.
+    related: [active_account_count]
+    owner: Operations
+    status: approved
+
+  - metric_id: active_account_count
+    name: Number of active accounts
+    short: Accounts with status Active at month-end.
+    long: Distinct accounts with AcStatus = Active in a month-end snapshot.
+    formula: "COUNT DISTINCT account WHERE status = Active"
+    synonyms: [active accounts, active loans, live accounts, live loans, number of active accounts, active account count]
+    behavior_note: Month-end count. Compare months; never add across months.
+    related: [account_count]
+    owner: Operations
+    status: approved
+
+  - metric_id: sanctioned_amount
+    name: Sanctioned amount
+    short: Total sanctioned limit of accounts in the book.
+    long: Sum of SanctionedAmount for accounts present in a month-end snapshot.
+    formula: "Σ SanctionedAmount"
+    synonyms: [sanctioned amount, sanction amount, sanctioned, sanctions, sanctioned value]
+    behavior_note: Month-end position. Compare months; never add across months.
+    related: [disbursement_amount]
+    owner: Credit
+    status: approved
+
+  - metric_id: disbursement_amount
+    name: Disbursement
+    short: Amount disbursed to borrowers in the period.
+    long: Sum of DisbursementAmount over the month-end rows in the period.
+    formula: "Σ DisbursementAmount over months in period"
+    synonyms: [disbursement, disbursements, disbursed, disbursal, disbursals, disbursement amount, amount disbursed]
+    behavior_note: Monthly flow. Adds up across months; needs a period.
+    related: [sanctioned_amount]
+    owner: Business
+    status: approved
+
+  - metric_id: demand_amount
+    name: Demand
+    short: Instalment demand raised in the period.
+    long: Sum of DemandAmount over the months in the period.
+    formula: "Σ DemandAmount over months in period"
+    synonyms: [demand, demand amount, emi demand, dues raised, billing, billed]
+    behavior_note: Monthly flow. Adds up across months; needs a period.
+    related: [repayment_amount, collection_efficiency]
+    owner: Collections
+    status: approved
+
+  - metric_id: repayment_amount
+    name: Repayment
+    short: Repayments received in the period (reversals netted).
+    long: Sum of RepaymentAmount over the months in the period; negative reversals are netted.
+    formula: "Σ RepaymentAmount over months in period"
+    synonyms: [repayment, repayments, repaid, repayment amount, collections, collection amount, total collection,
+               total collections, amount collected]
+    behavior_note: Monthly flow. Adds up across months; needs a period.
+    related: [demand_amount, collection_efficiency]
+    owner: Collections
+    status: approved
+
+  - metric_id: current_demand_collected
+    name: Collection against current-month demand
+    short: Repayment applied to the demand raised in the same month.
+    long: Sum of RepaymentForCurrentMonthDemand over the months in the period.
+    formula: "Σ RepaymentForCurrentMonthDemand"
+    synonyms: [current demand collected, collection against demand, current month collection, current collection,
+               collection against current demand]
+    behavior_note: Monthly flow. Adds up across months; needs a period.
+    related: [collection_efficiency]
+    owner: Collections
+    status: approved
+
+  - metric_id: collection_efficiency
+    name: Collection efficiency
+    short: Share of current-month demand that was collected.
+    long: Collection against current-month demand divided by demand, over the period.
+    formula: "Current-month collection ÷ Demand"
+    synonyms: [collection efficiency, ce, collection %, collection percentage, collection ratio, efficiency,
+               collection rate]
+    behavior_note: Ratio over a period. Computed from totals, never averaged.
+    related: [demand_amount, current_demand_collected]
+    owner: Collections
+    status: approved
+
+  - metric_id: par_30_plus_amount
+    name: PAR 30+ outstanding
+    short: Outstanding of accounts more than 30 days past due.
+    long: Sum of PAR 31-60, PAR 61-90 and PAR 90+ outstanding at a month-end snapshot.
+    formula: "PAR 31-60 + PAR 61-90 + PAR 90+"
+    synonyms: [par 30 amount, par30 amount, par 30 outstanding, par30 outstanding, par 30+ amount, par 30 os,
+               portfolio at risk amount]
+    behavior_note: Month-end balance. Compare months; never add across months.
+    related: [par_30_plus_ratio, total_outstanding]
+    owner: Credit risk
+    status: approved
+
+  - metric_id: par_30_plus_ratio
+    name: PAR 30+ ratio
+    short: Share of the book more than 30 days past due.
+    long: PAR 30+ outstanding divided by total outstanding at a month-end snapshot.
+    formula: "PAR 30+ outstanding ÷ Total outstanding"
+    synonyms: [par 30 ratio, par30 ratio, par 30 %, par30 %, par 30+ ratio, par 30 percentage, par 30+ %, par30+ %, portfolio at risk,
+               par ratio]
+    behavior_note: Month-end ratio. Computed from totals, never averaged.
+    related: [par_30_plus_amount, gross_npa_ratio]
+    owner: Credit risk
+    status: approved
+
+  - metric_id: npa_outstanding
+    name: NPA outstanding
+    short: Outstanding of non-performing accounts.
+    long: Total outstanding of accounts with NPAFlag = Yes at a month-end snapshot.
+    formula: "Σ TotalOS where NPA"
+    synonyms: [npa outstanding, npa amount, npa os, gross npa amount, npa book, npa value]
+    behavior_note: Month-end balance. Compare months; never add across months.
+    related: [gross_npa_ratio, total_outstanding]
+    owner: Credit risk
+    status: approved
+
+  - metric_id: gross_npa_ratio
+    name: Gross NPA ratio
+    short: Share of the loan book that is non-performing.
+    long: NPA outstanding divided by total outstanding at a month-end snapshot.
+    formula: "NPA outstanding ÷ Total outstanding"
+    synonyms: [gnpa, gross npa, gross npa ratio, npa ratio, npa %, npa percentage, gnpa %, gnpa ratio, gross npa %]
+    behavior_note: Month-end ratio. Computed from totals, never averaged.
+    related: [npa_outstanding, par_30_plus_ratio]
+    owner: Credit risk
+    status: approved
+
+  - metric_id: write_off_outstanding
+    name: Written-off outstanding
+    short: Outstanding of written-off accounts (definition pending).
+    long: Pending approval. Whether written-off accounts should report TotalOS is unconfirmed.
+    formula: "Σ TotalOS where written off"
+    synonyms: [write off amount, write-off amount, written off amount, written-off amount, write off outstanding,
+               write-off outstanding]
+    behavior_note: Not yet available.
+    owner: Finance
+    status: pending_approval
+
+# Phrases that could mean more than one KPI: always answered with a clarification.
+ambiguous:
+  npa: [gross_npa_ratio, npa_outstanding]
+  par: [par_30_plus_ratio, par_30_plus_amount]
+  par 30: [par_30_plus_ratio, par_30_plus_amount]
+  par30: [par_30_plus_ratio, par_30_plus_amount]
+  par 30+: [par_30_plus_ratio, par_30_plus_amount]
+  collection: [repayment_amount, collection_efficiency]
+
+dimensions:
+  - {dimension_id: month, synonyms: [month, months, month end, month-end, monthly, month-wise, monthwise, trend, over time, month on month, mom]}
+  - {dimension_id: quarter, synonyms: [quarter, quarters, quarter end, quarter-end, quarterly, qtr, quarter-wise, quarterwise, qoq]}
+  - {dimension_id: fiscal_year, synonyms: [year, years, yearly, annual, annually, fiscal year, financial year, fy, year-wise, yoy]}
+  - {dimension_id: year, synonyms: [calendar year]}
+  - {dimension_id: loan_group, synonyms: [loan group, loan groups, group, groups, loan type, loan types, product line, product lines]}
+  - {dimension_id: product_code, synonyms: [product, products, product code, product-wise, productwise]}
+  - {dimension_id: branch_code, synonyms: [branch, branches, branch-wise, branchwise, office, offices]}
+  - {dimension_id: state_name, synonyms: [state, states, state-wise, statewise, region, regions, geography, location, locations]}
+  - {dimension_id: account_status, synonyms: [status, account status, a/c status]}
+  - {dimension_id: business_nature, synonyms: [nature, business type, new vs renewal, new or renewal, nature of business]}
+  - {dimension_id: par_bucket, synonyms: [par bucket, par buckets, dpd bucket, dpd buckets, bucket, buckets, overdue bucket, ageing, aging, dpd]}
+  - {dimension_id: ticket_size, synonyms: [ticket size, ticket sizes, ticket, size, loan size, ticket bucket]}
+  - {dimension_id: npa_flag, synonyms: [npa status, npa flag, npa vs standard, npa classification]}
+  - {dimension_id: write_off_flag, synonyms: [write-off status, write off status, written off flag]}
+  - {dimension_id: restructure_flag, synonyms: [restructured status, restructure flag, restructuring status]}
+
+# Catalog page only (not used for matching).
+terms:
+  - {term: DPD, definition: Days past due on the oldest unpaid instalment.}
+  - {term: PAR, definition: "Portfolio at risk: outstanding of accounts overdue beyond a threshold (e.g. 30 days)."}
+  - {term: NPA, definition: "Non-performing asset: account flagged NPA by the lender (NPAFlag = Yes)."}
+  - {term: Month-end snapshot, definition: "Balances are captured once per month at month-end; balances are not added across months."}
+  - {term: Fiscal year, definition: "1 April to 31 March, named by end year (FY 2026 = Apr 2025 to Mar 2026)."}
+  - {term: Fiscal quarter, definition: "Q1 = Apr-Jun, Q2 = Jul-Sep, Q3 = Oct-Dec, Q4 = Jan-Mar (e.g. Q4 FY26 = Jan-Mar 2026)."}
+  - {term: Ticket size, definition: "Bucket of loan size (Up to 1.5 Cr, 1.5 - 2.5 Cr, Above 2.5 Cr)."}

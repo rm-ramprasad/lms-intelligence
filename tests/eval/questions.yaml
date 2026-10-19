@@ -1,0 +1,90 @@
+# Interpretation evaluation set (Milestone 3). Anchor (latest snapshot) = 2026-03-31.
+# expect: interpreted | clarify | refuse
+# spec: only the listed keys are compared (metric, dimensions, filters, period, sort, limit).
+# context: previous spec for follow-up questions.
+# Golden-example paraphrases are tested separately against examples.yaml (tests/test_eval.py).
+
+anchor: "2026-03-31"
+
+cases:
+
+  # ---- every approved KPI via a synonym ---------------------------------------------------
+  - {q: "loan book", expect: interpreted, spec: {metric: total_outstanding, dimensions: []}}
+  - {q: "book size as on date", expect: interpreted, spec: {metric: total_outstanding, period: {kind: latest}}}
+  - {q: "AUM", expect: interpreted, spec: {metric: total_outstanding}}
+  - {q: "POS by state", expect: interpreted, spec: {metric: total_outstanding, dimensions: [state_name]}}
+  - {q: "number of accounts", expect: interpreted, spec: {metric: account_count}}
+  - {q: "live loans", expect: interpreted, spec: {metric: active_account_count}}
+  - {q: "sanctioned amount by ticket size", expect: interpreted, spec: {metric: sanctioned_amount, dimensions: [ticket_size]}}
+  - {q: "disbursals in FY26", expect: interpreted, spec: {metric: disbursement_amount, period: {kind: fiscal_year, year: 2026}}}
+  - {q: "EMI demand for March 2026", expect: interpreted, spec: {metric: demand_amount, period: {kind: month, month: "2026-03"}}}
+  - {q: "collections last quarter", expect: interpreted, spec: {metric: repayment_amount, period: {kind: range, start: "2025-10-01", end: "2025-12-31"}}}
+  - {q: "current month collection", expect: clarify}          # flow KPI; "current month" is a period word, so no KPI phrase remains
+  - {q: "collection against demand ytd", expect: interpreted, spec: {metric: current_demand_collected, period: {kind: range, start: "2025-04-01", end: "2026-03-31"}}}
+  - {q: "CE for FY 2025-26", expect: interpreted, spec: {metric: collection_efficiency, period: {kind: fiscal_year, year: 2026}}}
+  - {q: "PAR 30 amount", expect: interpreted, spec: {metric: par_30_plus_amount}}
+  - {q: "portfolio at risk by branch", expect: interpreted, spec: {metric: par_30_plus_ratio, dimensions: [branch_code]}}
+  - {q: "NPA outstanding by state", expect: interpreted, spec: {metric: npa_outstanding, dimensions: [state_name]}}
+  - {q: "GNPA", expect: interpreted, spec: {metric: gross_npa_ratio}}
+
+  # ---- dimensions and values ---------------------------------------------------------------
+  - {q: "outstanding in TN by branch", expect: interpreted, spec: {metric: total_outstanding, dimensions: [branch_code], filters: [{dimension: state_name, op: eq, value: Tamil Nadu}]}}
+  - {q: "outstanding in Tamil Nadu and Karnataka", expect: interpreted, spec: {filters: [{dimension: state_name, op: in, value: [Tamil Nadu, Karnataka]}]}}
+  - {q: "gnpa excluding Delhi by state", expect: interpreted, spec: {filters: [{dimension: state_name, op: ne, value: Delhi}]}}
+  - {q: "outstanding for Growth Finance by product", expect: interpreted, spec: {dimensions: [product_code], filters: [{dimension: loan_group, op: eq, value: Growth Finance}]}}
+  - {q: "outstanding in the 90+ bucket by state", expect: interpreted, spec: {dimensions: [state_name], filters: [{dimension: par_bucket, op: eq, value: 90+ DPD}]}}
+  - {q: "outstanding by par bucket", expect: interpreted, spec: {dimensions: [par_bucket]}}
+  - {q: "number of npa accounts by loan group", expect: interpreted, spec: {metric: account_count, dimensions: [loan_group], filters: [{dimension: npa_flag, op: eq, value: true}]}}
+  - {q: "restructured accounts outstanding", expect: interpreted, spec: {metric: total_outstanding, filters: [{dimension: restructure_flag, op: eq, value: true}]}}
+  - {q: "outstanding for east branch", expect: interpreted, spec: {dimensions: [], filters: [{dimension: branch_code, op: eq, value: DEMO-EAST}]}}
+  - {q: "large ticket outstanding by state", expect: interpreted, spec: {filters: [{dimension: ticket_size, op: eq, value: Above 2.5 Cr}]}}
+  - {q: "outstanding up to 1.5 cr ticket size", expect: interpreted, spec: {filters: [{dimension: ticket_size, op: eq, value: Up to 1.5 Cr}]}}
+
+  # ---- periods -----------------------------------------------------------------------------
+  - {q: "outstanding March 2026", expect: interpreted, spec: {period: {kind: month, month: "2026-03"}}}
+  - {q: "outstanding mar-26", expect: interpreted, spec: {period: {kind: month, month: "2026-03"}}}
+  - {q: "outstanding in december", expect: interpreted, spec: {period: {kind: month, month: "2025-12"}}}
+  - {q: "outstanding fy25", expect: interpreted, spec: {period: {kind: fiscal_year, year: 2025}}}
+  - {q: "disbursement Q1", expect: interpreted, spec: {period: {kind: range, start: "2025-04-01", end: "2025-06-30"}}}
+  - {q: "disbursement Q4 FY26", expect: interpreted, spec: {period: {kind: range, start: "2026-01-01", end: "2026-03-31"}}}
+  - {q: "disbursement this quarter", expect: interpreted, spec: {period: {kind: range, start: "2026-01-01", end: "2026-03-31"}}}
+  - {q: "disbursement last year", expect: interpreted, spec: {period: {kind: fiscal_year, year: 2025}}}
+  - {q: "disbursement last 6 months by month", expect: interpreted, spec: {dimensions: [month], period: {kind: range, start: "2025-10-01", end: "2026-03-31"}}}
+  - {q: "disbursement between Jan 2026 and Mar 2026", expect: interpreted, spec: {period: {kind: range, start: "2026-01-01", end: "2026-03-31"}}}
+  - {q: "outstanding in 2025", expect: interpreted, spec: {period: {kind: calendar_year, year: 2025}}}
+  - {q: "AUM trend", expect: interpreted, spec: {dimensions: [month], period: {kind: range, start: "2025-04-01", end: "2026-03-31"}}}
+  - {q: "yearly disbursement", expect: interpreted, spec: {dimensions: [fiscal_year]}}
+
+  # ---- ranking -----------------------------------------------------------------------------
+  - {q: "top 3 branches by PAR 30 ratio", expect: interpreted, spec: {metric: par_30_plus_ratio, dimensions: [branch_code], sort: [{by: value, direction: desc}], limit: 3}}
+  - {q: "bottom 2 states by gnpa", expect: interpreted, spec: {sort: [{by: value, direction: asc}], limit: 2}}
+  - {q: "highest outstanding state", expect: interpreted, spec: {dimensions: [state_name], sort: [{by: value, direction: desc}]}}
+
+  # ---- follow-ups --------------------------------------------------------------------------
+  - {q: "now by branch", context: {metric: gross_npa_ratio, dimensions: [state_name], filters: []}, expect: interpreted, spec: {metric: gross_npa_ratio, dimensions: [branch_code]}}
+  - {q: "also by loan group", context: {metric: gross_npa_ratio, dimensions: [state_name], filters: []}, expect: interpreted, spec: {dimensions: [state_name, loan_group]}}
+  - {q: "only TN", context: {metric: total_outstanding, dimensions: [branch_code], filters: []}, expect: interpreted, spec: {dimensions: [branch_code], filters: [{dimension: state_name, op: eq, value: Tamil Nadu}]}}
+  - {q: "same for FY25", context: {metric: disbursement_amount, dimensions: [], filters: [], period: {kind: fiscal_year, year: 2026}}, expect: interpreted, spec: {metric: disbursement_amount, period: {kind: fiscal_year, year: 2025}}}
+  - {q: "what about outstanding", context: {metric: gross_npa_ratio, dimensions: [state_name], filters: []}, expect: interpreted, spec: {metric: total_outstanding, dimensions: [state_name]}}
+  - {q: "remove filters", context: {metric: total_outstanding, dimensions: [state_name], filters: [{dimension: loan_group, op: eq, value: Growth Finance}]}, expect: interpreted, spec: {filters: []}}
+
+  # ---- clarifications ----------------------------------------------------------------------
+  - {q: "npa", expect: clarify}
+  - {q: "par by state", expect: clarify}
+  - {q: "disbursement", expect: clarify}
+  - {q: "show me the numbers", expect: clarify}
+  - {q: "outstanding and gnpa by state", expect: clarify}
+  - {q: "outstanding by state blah", expect: clarify}
+  - {q: "by branch", expect: clarify}
+  - {q: "outstanding by month", expect: interpreted, spec: {dimensions: [month], period: {kind: range, start: "2025-04-01", end: "2026-03-31"}}}
+  - {q: "outstanding by customer segment", expect: refuse}
+
+  # ---- refusals ----------------------------------------------------------------------------
+  - {q: "outstanding for account 1234567890", expect: refuse}
+  - {q: "outstanding of AB12345678", expect: refuse}
+  - {q: "which customers are NPA", expect: refuse}
+  - {q: "list borrowers in Tamil Nadu", expect: refuse}
+  - {q: "why did NPA increase", expect: refuse}
+  - {q: "forecast disbursement next quarter", expect: refuse}
+  - {q: "write off amount", expect: refuse}
+  - {q: "send to john@example.com", expect: refuse}

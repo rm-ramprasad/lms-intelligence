@@ -44,7 +44,27 @@
         "athena:GetWorkGroup",
         "athena:BatchGetQueryExecution"
       ],
-      "Resource": "arn:aws:athena:ap-south-1:791896160716:workgroup/analytics_poc_wg"
+      "Resource": [
+        "arn:aws:athena:ap-south-1:791896160716:workgroup/analytics_poc_wg",
+        "arn:aws:athena:ap-south-1:791896160716:workgroup/analytics_poc_etl_wg"
+      ]
+    },
+    {
+      "Sid": "CuratedBucketReadWrite",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject",
+        "s3:AbortMultipartUpload",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": [
+        "arn:aws:s3:::analytics-poc-curated-791896160716-ap-south-1",
+        "arn:aws:s3:::analytics-poc-curated-791896160716-ap-south-1/*"
+      ]
     },
     {
       "Sid": "AthenaListing",
@@ -65,7 +85,10 @@
         "glue:UpdateTable",
         "glue:DeleteTable",
         "glue:GetPartition",
-        "glue:GetPartitions"
+        "glue:GetPartitions",
+        "glue:BatchGetPartition",
+        "glue:CreatePartition",
+        "glue:BatchCreatePartition"
       ],
       "Resource": [
         "arn:aws:glue:ap-south-1:791896160716:catalog",
@@ -80,9 +103,24 @@
       "Resource": ["arn:aws:s3:::opta-s3-demo", "arn:aws:s3:::opta-s3-demo/*"]
     },
     {
+      "Sid": "BedrockReadOnlyDiscovery",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock:ListFoundationModels",
+        "bedrock:GetFoundationModel",
+        "bedrock:ListInferenceProfiles",
+        "bedrock:GetInferenceProfile"
+      ],
+      "Resource": "*"
+    },
+    {
       "Sid": "DenyOutOfScopeServices",
       "Effect": "Deny",
-      "Action": ["glue:CreateCrawler", "glue:StartCrawler", "bedrock:*", "rds:*"],
+      "Action": [
+        "glue:CreateCrawler", "glue:StartCrawler", "rds:*",
+        "bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream",
+        "bedrock:Create*", "bedrock:Delete*", "bedrock:Put*", "bedrock:Update*"
+      ],
       "Resource": "*"
     }
   ]

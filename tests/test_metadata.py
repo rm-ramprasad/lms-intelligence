@@ -121,7 +121,15 @@ def test_iam_policy_least_privilege():
         if any(a.startswith("s3:Put") or a.startswith("s3:Delete") for a in actions):
             assert all(CAT["aws"]["source_bucket"] not in r for r in s["Resource"]), s["Sid"]
     denied = {a for s in pol["Statement"] if s["Effect"] == "Deny" for a in s["Action"]}
-    assert {"glue:CreateCrawler", "bedrock:*", "rds:*", "s3:PutObject", "s3:DeleteObject"} <= denied
+    assert {"glue:CreateCrawler", "bedrock:InvokeModel", "rds:*", "s3:PutObject", "s3:DeleteObject"} <= denied
+
+
+def test_runtime_bedrock_limited_to_nova_micro():
+    pol = json.loads((ROOT / "infrastructure" / "policies" / "analytics-query-runtime-policy.json").read_text())
+    allows = {a: s for s in pol["Statement"] if s["Effect"] == "Allow" for a in s["Action"] if a.startswith("bedrock:")}
+    assert set(allows) == {"bedrock:InvokeModel", "bedrock:ApplyGuardrail"}
+    assert all("nova-micro" in r for r in allows["bedrock:InvokeModel"]["Resource"])
+    assert ":guardrail/" in allows["bedrock:ApplyGuardrail"]["Resource"]
 
 
 def test_no_credentials_in_repo():

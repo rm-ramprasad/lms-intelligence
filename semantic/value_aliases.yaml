@@ -1,0 +1,60 @@
+# Aliases for dimension values (curated). Canonical values come from the generated
+# semantic/dimension_values.yaml; every alias must point to an existing value.
+#
+# match_values  true: the canonical value text itself is also recognised (default true)
+# aliases       lowercase phrase -> canonical value
+# code_aliases  matched ONLY when typed in UPPERCASE (avoids "up", "mp" clashing with English)
+# Boolean dimensions map phrases to true/false.
+
+version: 1
+
+dimensions:
+
+  state_name:
+    aliases: {bengal: West Bengal, ncr: Delhi, new delhi: Delhi, tamilnadu: Tamil Nadu, tamil: Tamil Nadu,
+              karnatak: Karnataka, maharastra: Maharashtra, telengana: Telangana}
+    code_aliases: {TN: Tamil Nadu, MH: Maharashtra, UP: Uttar Pradesh, WB: West Bengal, MP: Madhya Pradesh,
+                   KA: Karnataka, GJ: Gujarat, RJ: Rajasthan, TG: Telangana, DL: Delhi}
+
+  state_code:
+    match_values: false        # codes are handled by state_name code_aliases
+
+  loan_group:
+    aliases: {working capital: Working Capital Plus, wc plus: Working Capital Plus, rural: Rural Enterprise,
+              flex: Enterprise Flex}
+
+  product_code:
+    aliases: {}
+
+  branch_code:
+    aliases: {east: DEMO-EAST, west: DEMO-WEST, north: DEMO-NORTH, south: DEMO-SOUTH,
+              east branch: DEMO-EAST, west branch: DEMO-WEST, north branch: DEMO-NORTH, south branch: DEMO-SOUTH}
+
+  account_status:
+    aliases: {active: Active, live: Active, closed: Closed}
+
+  business_nature:
+    aliases: {fresh: New Business, new loans: New Business, renewals: Renewal}
+
+  par_bucket:
+    match_values: false        # "Current" clashes with time words; use the explicit phrases below
+    aliases: {current bucket: Current, regular: Current, 0 dpd: Current, no dpd: Current, zero dpd: Current,
+              1-30: 1-30 DPD, 1-30 dpd: 1-30 DPD, 1 to 30 dpd: 1-30 DPD,
+              31-60: 31-60 DPD, 31-60 dpd: 31-60 DPD, 31 to 60 dpd: 31-60 DPD,
+              61-90: 61-90 DPD, 61-90 dpd: 61-90 DPD, 61 to 90 dpd: 61-90 DPD,
+              90+: 90+ DPD, 90+ dpd: 90+ DPD, over 90: 90+ DPD, above 90: 90+ DPD, 90 plus: 90+ DPD, over 90 dpd: 90+ DPD}
+
+  ticket_size:
+    aliases: {small ticket: Up to 1.5 Cr, small tickets: Up to 1.5 Cr, mid ticket: 1.5 - 2.5 Cr, medium ticket: 1.5 - 2.5 Cr,
+              large ticket: Above 2.5 Cr, large tickets: Above 2.5 Cr, big ticket: Above 2.5 Cr}
+
+  npa_flag:
+    aliases: {npa accounts: true, npa loans: true, npa cases: true, non-npa: false, non npa: false,
+              standard accounts: false, performing: false, performing accounts: false}
+
+  write_off_flag:
+    aliases: {written off: true, written-off: true, write off: true, write-off: true, writeoff: true,
+              written off accounts: true}
+
+  restructure_flag:
+    aliases: {restructured: true, restructured accounts: true, non-restructured: false, not restructured: false}

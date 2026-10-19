@@ -1,0 +1,56 @@
+generated: by scripts/refresh_values.py at 2026-10-19T02:48Z; do not edit
+version: 1
+values:
+  loan_group:
+  - Enterprise Flex
+  - Growth Finance
+  - Rural Enterprise
+  - Working Capital Plus
+  product_code:
+  - DF-EF
+  - DF-GF
+  - DF-RE
+  - DF-WC
+  branch_code:
+  - DEMO-EAST
+  - DEMO-NORTH
+  - DEMO-SOUTH
+  - DEMO-WEST
+  state_name:
+  - Delhi
+  - Gujarat
+  - Karnataka
+  - Madhya Pradesh
+  - Maharashtra
+  - Rajasthan
+  - Tamil Nadu
+  - Telangana
+  - Uttar Pradesh
+  - West Bengal
+  state_code:
+  - DL
+  - GJ
+  - KA
+  - MH
+  - MP
+  - RJ
+  - TG
+  - TN
+  - UP
+  - WB
+  account_status:
+  - Active
+  - Closed
+  business_nature:
+  - New Business
+  - Renewal
+  par_bucket:
+  - 1-30 DPD
+  - 31-60 DPD
+  - 61-90 DPD
+  - 90+ DPD
+  - Current
+  ticket_size:
+  - 1.5 - 2.5 Cr
+  - Above 2.5 Cr
+  - Up to 1.5 Cr

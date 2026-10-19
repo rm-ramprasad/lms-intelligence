@@ -40,6 +40,7 @@ class QuerySpec(_Strict):
     period: DatePeriod | None = None
     sort: list[Sort] = Field(default_factory=list, max_length=4)
     limit: int | None = Field(default=None, ge=1)
+    include_total: bool = False   # overall row across the requested dimensions (where additive-safe)
 
 
 class ErrorDetail(BaseModel):
@@ -69,6 +70,8 @@ class QueryResult(BaseModel):
     rows: list[list[Any]] = Field(default_factory=list)
     row_count: int = 0
     truncated: bool = False
+    total: list[Any] | None = None      # measure/component values of the overall row (same order as measure columns)
+    snapshot_date: str | None = None    # latest month-end snapshot used (ISO date)
     metric: MetricMetadata | None = None
     period: dict | None = None
     query_id: str | None = None
