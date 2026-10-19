@@ -18,6 +18,25 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+
+def _load_cloud_secrets() -> None:
+    """On Streamlit Community Cloud there is no ~/.aws profile: take credentials from st.secrets["aws"]
+    (set in the app's Settings → Secrets). Locally, with no secrets file, nothing happens."""
+    try:
+        aws = st.secrets.get("aws")
+    except Exception:   # no secrets.toml locally
+        return
+    if not aws:
+        return
+    for key, env in (("aws_access_key_id", "AWS_ACCESS_KEY_ID"), ("aws_secret_access_key", "AWS_SECRET_ACCESS_KEY"),
+                     ("aws_session_token", "AWS_SESSION_TOKEN"), ("region", "AWS_DEFAULT_REGION")):
+        if aws.get(key):
+            os.environ.setdefault(env, str(aws[key]))
+    os.environ.setdefault("BI_AWS_PROFILE", "")   # use the environment credentials, not a named profile
+
+
+_load_cloud_secrets()
+
 from bi_chat.answer_renderer import dimension_label, render_answer  # noqa: E402
 from bi_chat.audit import log_turn  # noqa: E402
 from bi_chat.catalog import load_catalog  # noqa: E402

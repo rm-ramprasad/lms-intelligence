@@ -13,6 +13,21 @@ import yaml
 SEMANTIC_DIR = Path(__file__).resolve().parents[1] / "semantic"
 
 
+def resolve_profile(default: str | None) -> str | None:
+    """Which AWS profile to use.
+
+    1. BI_AWS_PROFILE if set ("" means: no profile, use the default credential chain).
+    2. No profile when credentials are supplied via environment variables (e.g. Streamlit Community Cloud
+       secrets, CI, an EC2/ECS role) — named profiles don't exist there.
+    3. Otherwise the configured profile (local development).
+    """
+    if "BI_AWS_PROFILE" in os.environ:
+        return os.environ["BI_AWS_PROFILE"] or None
+    if os.environ.get("AWS_ACCESS_KEY_ID") or os.environ.get("AWS_CONTAINER_CREDENTIALS_RELATIVE_URI"):
+        return None
+    return default
+
+
 @dataclass(frozen=True)
 class ServiceConfig:
     profile: str | None
@@ -29,7 +44,7 @@ class ServiceConfig:
         with open(semantic_dir / "tables.yaml", encoding="utf-8") as f:
             aws = yaml.safe_load(f)["aws"]
         return cls(
-            profile=os.environ.get("BI_AWS_PROFILE", aws.get("runtime_profile", aws["profile"])) or None,
+            profile=resolve_profile(aws.get("runtime_profile", aws["profile"])),
             region=os.environ.get("BI_AWS_REGION", aws["region"]),
             database=aws["database"],
             workgroup=aws["workgroup"],
